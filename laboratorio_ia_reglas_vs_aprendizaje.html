@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Experimento interactivo para comprender la diferencia entre software tradicional y aprendizaje automático." />
+  <title>Laboratorio IA: Software tradicional vs. Aprendizaje automático</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --panel:#f8fafc;
+      --text:#172033;
+      --muted:#667085;
+      --border:#d7dee9;
+      --accent:#3157d5;
+      --accent-soft:#eaf0ff;
+      --good:#16833f;
+      --bad:#b42318;
+      --warning:#a15c00;
+      --shadow:0 8px 24px rgba(20,38,80,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .hero{
+      padding:48px 20px 34px;
+      background:linear-gradient(135deg,#203b92,#3157d5);
+      color:#fff;
+      text-align:center;
+    }
+    .hero h1{
+      margin:0 auto 12px;
+      max-width:980px;
+      font-size:clamp(2rem,4vw,3.4rem);
+      line-height:1.05;
+    }
+    .hero p{
+      margin:0 auto;
+      max-width:860px;
+      font-size:1.05rem;
+      opacity:.95;
+    }
+    .wrap{
+      width:min(1180px,calc(100% - 32px));
+      margin:26px auto 60px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:22px;
+    }
+    h2,h3{margin-top:0}
+    .lead{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .lead > div{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+    }
+    .formula{
+      font-weight:700;
+      color:var(--accent);
+      text-align:center;
+      font-size:1.05rem;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .stat{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      text-align:center;
+    }
+    .stat small{
+      display:block;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-size:.72rem;
+    }
+    .stat strong{
+      display:block;
+      margin-top:3px;
+      font-size:1.6rem;
+    }
+    .mission{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .mission p{margin:2px 0 0;color:var(--muted)}
+    button{
+      border:0;
+      border-radius:11px;
+      padding:11px 14px;
+      min-height:44px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    button:hover:not(:disabled){transform:translateY(-1px)}
+    button:focus-visible{outline:3px solid rgba(49,87,213,.3);outline-offset:2px}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-soft{background:var(--accent-soft);color:var(--accent)}
+    .btn-plain{background:var(--panel);color:var(--text);border:1px solid var(--border)}
+    .lab{
+      display:grid;
+      grid-template-columns:1fr 1.15fr 1fr;
+      gap:18px;
+      align-items:start;
+    }
+    .system{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .system h3{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:4px;
+    }
+    .system .sub{color:var(--muted);font-size:.93rem;margin-top:0}
+    .box{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:13px;
+      margin-top:12px;
+    }
+    .box ul{padding-left:20px;margin-bottom:0}
+    .center-stage{
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+    .message{
+      margin:14px 0;
+      padding:22px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      text-align:center;
+      font-size:1.2rem;
+      font-weight:800;
+      min-height:92px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .choice-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .feedback{
+      margin-top:13px;
+      min-height:78px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:13px;
+      background:#fff;
+    }
+    .drop-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .dropzone{
+      min-height:74px;
+      border:2px dashed var(--border);
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:10px;
+      color:var(--muted);
+      background:var(--panel);
+    }
+    .dropzone.over{
+      border-color:var(--accent);
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
+    .result-good{color:var(--good);font-weight:800}
+    .result-bad{color:var(--bad);font-weight:800}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+    th{background:var(--panel)}
+    .conclusion-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .hidden{display:none!important}
+    .teacher-note{
+      border-left:5px solid var(--accent);
+      background:#f7f9ff;
+    }
+    footer{
+      text-align:center;
+      color:var(--muted);
+      padding:10px 20px 35px;
+      font-size:.9rem;
+    }
+    @media(max-width:920px){
+      .lab{grid-template-columns:1fr}
+      .lead,.conclusion-grid{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:560px){
+      .choice-grid,.drop-grid{grid-template-columns:1fr}
+      .mission{align-items:flex-start;flex-direction:column}
+      .stats{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>Laboratorio IA: ¿Reglas o aprendizaje?</h1>
+    <p>Experimento interactivo para comprender la diferencia entre el software tradicional y el aprendizaje automático.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>¿Qué vamos a descubrir?</h2>
+      <p>
+        Dos sistemas pueden intentar resolver el mismo problema de maneras muy diferentes.
+        En este laboratorio vamos a utilizar un ejemplo sencillo: <strong>detectar mensajes SPAM</strong>.
+      </p>
+
+      <div class="lead">
+        <div>
+          <h3>💻 Software tradicional</h3>
+          <p>Una persona escribe las reglas que el programa debe seguir.</p>
+          <p class="formula">Datos + reglas → resultado</p>
+        </div>
+        <div>
+          <h3>🧠 Aprendizaje automático</h3>
+          <p>El sistema recibe ejemplos y aprende patrones durante el entrenamiento.</p>
+          <p class="formula">Datos + ejemplos → modelo → predicción</p>
+        </div>
+        <div>
+          <h3>🔄 Mejora del modelo</h3>
+          <p>El modelo no mejora simplemente con el tiempo: necesita nuevos datos y un nuevo entrenamiento.</p>
+          <p class="formula">Nuevos datos + reentrenamiento</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Instrucciones</h2>
+      <ol>
+        <li>Pulsa <strong>Siguiente mensaje</strong>.</li>
+        <li>Decide primero tú si el mensaje es SPAM o NO SPAM.</li>
+        <li>Observa la respuesta del sistema tradicional y del sistema de aprendizaje automático.</li>
+        <li>Cuando aparezcan casos nuevos, modifica ambos sistemas.</li>
+        <li>Compara qué necesita cada uno para mejorar.</li>
+      </ol>
+    </section>
+
+    <section id="ia-lab">
+      <div class="stats">
+        <div class="stat"><small>Ronda</small><strong id="round">1</strong></div>
+        <div class="stat"><small>Aciertos</small><strong id="hits">0</strong></div>
+        <div class="stat"><small>Errores</small><strong id="errors">0</strong></div>
+        <div class="stat"><small>Fase</small><strong id="phase" style="font-size:1.05rem">Exploración</strong></div>
+      </div>
+
+      <div class="mission">
+        <div>
+          <strong>🎯 Misión</strong>
+          <p id="missionText">Descubre cómo clasifican los mensajes dos sistemas diferentes.</p>
+        </div>
+        <button id="restartBtn" class="btn-soft" type="button">↻ Reiniciar</button>
+      </div>
+
+      <div class="lab">
+        <section class="system">
+          <h3>💻 Sistema tradicional</h3>
+          <p class="sub">Sigue reglas explícitas escritas por una persona.</p>
+
+          <div class="box">
+            <strong>Reglas actuales</strong>
+            <ul id="rulesList">
+              <li>Si contiene “GRATIS” → SPAM</li>
+              <li>Si contiene “OFERTA” → SPAM</li>
+            </ul>
+          </div>
+
+          <div class="box">
+            <strong>Resultado</strong>
+            <p id="traditionalResult">Aún no se ha probado ningún mensaje.</p>
+          </div>
+
+          <button id="addRuleBtn" class="btn-plain" type="button" style="width:100%;margin-top:12px">
+            👨‍💻 Añadir regla “PREMIO”
+          </button>
+        </section>
+
+        <section class="center-stage">
+          <div style="text-align:center">
+            <div style="font-size:2.2rem">📩</div>
+            <small style="text-transform:uppercase;color:var(--muted);letter-spacing:.06em">Mensaje de prueba</small>
+          </div>
+
+          <div id="messageCard" class="message" draggable="false">Pulsa “Siguiente mensaje” para empezar</div>
+
+          <div class="choice-grid">
+            <button id="spamBtn" class="btn-primary" type="button" disabled>🚫 Creo que es SPAM</button>
+            <button id="normalBtn" class="btn-plain" type="button" disabled>✅ Creo que NO es SPAM</button>
+          </div>
+
+          <div id="feedback" class="feedback" aria-live="polite">
+            Primero predices tú. Después verás qué hacen los dos sistemas.
+          </div>
+
+          <button id="nextBtn" class="btn-primary" type="button" style="width:100%;margin-top:12px">
+            ▶ Siguiente mensaje
+          </button>
+
+          <div class="box">
+            <strong>Clasificación manipulativa</strong>
+            <p style="color:var(--muted);font-size:.92rem">
+              También puedes arrastrar la tarjeta a una de estas dos zonas.
+            </p>
+            <div class="drop-grid">
+              <div id="dropSpam" class="dropzone">🚫 Zona SPAM</div>
+              <div id="dropNormal" class="dropzone">✅ Zona NO SPAM</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="system">
+          <h3>🧠 Machine Learning</h3>
+          <p class="sub">Aprende patrones a partir de ejemplos.</p>
+
+          <div class="box">
+            <strong>Ejemplos de entrenamiento</strong>
+            <ul id="examplesList">
+              <li>GRATIS → SPAM</li>
+              <li>OFERTA → SPAM</li>
+              <li>Reunión mañana → NO SPAM</li>
+              <li>Examen el jueves → NO SPAM</li>
+            </ul>
+          </div>
+
+          <div class="box">
+            <strong>Resultado</strong>
+            <p id="mlResult">Aún no se ha probado ningún mensaje.</p>
+          </div>
+
+          <button id="trainBtn" class="btn-plain" type="button" style="width:100%;margin-top:12px">
+            📚 Añadir ejemplos y reentrenar
+          </button>
+        </section>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:22px">
+      <h2>🔬 Registro del experimento</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mensaje</th>
+              <th>Respuesta real</th>
+              <th>Tu predicción</th>
+              <th>Tradicional</th>
+              <th>Machine Learning</th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="conclusion" class="card hidden">
+      <h2>🧩 ¿Qué acabamos de observar?</h2>
+      <div class="conclusion-grid">
+        <div class="box">
+          <h3>💻 Software tradicional</h3>
+          <p>Para reconocer un caso nuevo, una persona debe modificar las reglas de forma explícita.</p>
+        </div>
+        <div class="box">
+          <h3>🧠 Machine Learning</h3>
+          <p>El comportamiento puede cambiar cuando se incorporan nuevos ejemplos y el modelo se vuelve a entrenar.</p>
+        </div>
+        <div class="box">
+          <h3>⚠️ Importante</h3>
+          <p>Un modelo no aprende necesariamente mientras lo usamos. Aprender requiere datos, entrenamiento y evaluación.</p>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:14px">
+        <strong>💬 Pregunta para debatir</strong>
+        <p>¿Qué ocurriría si enseñáramos al modelo ejemplos incorrectos, insuficientes o sesgados?</p>
+      </div>
+    </section>
+</main>
+
+  <footer>
+    Recurso educativo interactivo · Inteligencia Artificial · Bachillerato
+  </footer>
+
+  <script>
+    (() => {
+      const data = [
+        {text:'Reunión de clase mañana a las 9', spam:false},
+        {text:'¡GRATIS! Consigue tu regalo', spam:true},
+        {text:'OFERTA especial solo hoy', spam:true},
+        {text:'Trae el cuaderno azul mañana', spam:false},
+        {text:'¡Has ganado un PREMIO!', spam:true},
+        {text:'Haz clic aquí y gana dinero', spam:true},
+        {text:'La profesora ha subido las notas', spam:false},
+        {text:'Eres el GANADOR. Reclama tu recompensa', spam:true}
+      ];
+
+      let index = -1;
+      let hits = 0;
+      let errors = 0;
+      let traditionalExtra = false;
+      let mlTrained = false;
+      let answered = false;
+
+      const $ = id => document.getElementById(id);
+      const round = $('round');
+      const hitsEl = $('hits');
+      const errorsEl = $('errors');
+      const phase = $('phase');
+      const missionText = $('missionText');
+      const messageCard = $('messageCard');
+      const feedback = $('feedback');
+      const traditionalResult = $('traditionalResult');
+      const mlResult = $('mlResult');
+      const rulesList = $('rulesList');
+      const examplesList = $('examplesList');
+      const logBody = $('logBody');
+      const conclusion = $('conclusion');
+      const spamBtn = $('spamBtn');
+      const normalBtn = $('normalBtn');
+      const nextBtn = $('nextBtn');
+      const addRuleBtn = $('addRuleBtn');
+      const trainBtn = $('trainBtn');
+      const restartBtn = $('restartBtn');
+      const dropSpam = $('dropSpam');
+      const dropNormal = $('dropNormal');
+
+      function tradPredict(text) {
+        const t = text.toUpperCase();
+        if (t.includes('GRATIS') || t.includes('OFERTA')) return true;
+        if (traditionalExtra && t.includes('PREMIO')) return true;
+        return false;
+      }
+
+      function mlPredict(text) {
+        const t = text.toUpperCase();
+        if (t.includes('GRATIS') || t.includes('OFERTA')) return true;
+        if (mlTrained && (
+          t.includes('PREMIO') ||
+          t.includes('GANADOR') ||
+          t.includes('GANA') ||
+          t.includes('DINERO') ||
+          t.includes('CLIC') ||
+          t.includes('RECOMPENSA')
+        )) return true;
+        return false;
+      }
+
+      const label = value => value ? 'SPAM' : 'NO SPAM';
+
+      function updateStats() {
+        hitsEl.textContent = hits;
+        errorsEl.textContent = errors;
+        round.textContent = index >= 0 ? index + 1 : 1;
+      }
+
+      function nextMessage() {
+        if (index >= data.length - 1) {
+          conclusion.classList.remove('hidden');
+          phase.textContent = 'Conclusión';
+          missionText.textContent = 'Compara los resultados y explica qué necesitó cada sistema para mejorar.';
+          spamBtn.disabled = true;
+          normalBtn.disabled = true;
+          nextBtn.disabled = true;
+          messageCard.textContent = 'Experimento terminado';
+          messageCard.setAttribute('draggable','false');
+          feedback.textContent = 'Revisa el registro de resultados y responde a la pregunta final.';
+          conclusion.scrollIntoView({behavior:'smooth',block:'start'});
+          return;
+        }
+
+        index++;
+        answered = false;
+        const item = data[index];
+
+        messageCard.textContent = item.text;
+        messageCard.setAttribute('draggable','true');
+        feedback.textContent = 'Clasifica primero el mensaje tú. Después aparecerán las decisiones de los dos sistemas.';
+        traditionalResult.textContent = 'Esperando tu predicción…';
+        mlResult.textContent = 'Esperando tu predicción…';
+
+        spamBtn.disabled = false;
+        normalBtn.disabled = false;
+        nextBtn.disabled = true;
+
+        if (index >= 4) {
+          phase.textContent = 'Casos nuevos';
+          missionText.textContent = 'Ahora aparecen mensajes que los sistemas no habían visto. Observa qué ocurre.';
+        }
+        updateStats();
+      }
+
+      function answer(userSpam) {
+        if (answered || index < 0) return;
+        answered = true;
+
+        const item = data[index];
+        const correct = userSpam === item.spam;
+        if (correct) hits++; else errors++;
+
+        const trad = tradPredict(item.text);
+        const ml = mlPredict(item.text);
+
+        traditionalResult.innerHTML =
+          `<span class="${trad === item.spam ? 'result-good':'result-bad'}">${label(trad)} · ${trad === item.spam ? '✅ acierto':'❌ error'}</span>`;
+
+        mlResult.innerHTML =
+          `<span class="${ml === item.spam ? 'result-good':'result-bad'}">${label(ml)} · ${ml === item.spam ? '✅ acierto':'❌ error'}</span>`;
+
+        feedback.innerHTML =
+          `${correct ? '<span class="result-good">✅ Tu clasificación es correcta.</span>' : '<span class="result-bad">❌ Tu clasificación no coincide con la respuesta real.</span>'}
+           <br><strong>Respuesta real:</strong> ${label(item.spam)}.`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.text}</td>
+          <td>${label(item.spam)}</td>
+          <td>${label(userSpam)}</td>
+          <td>${label(trad)}</td>
+          <td>${label(ml)}</td>`;
+        logBody.appendChild(tr);
+
+        spamBtn.disabled = true;
+        normalBtn.disabled = true;
+        nextBtn.disabled = false;
+        messageCard.setAttribute('draggable','false');
+        updateStats();
+
+        if (index === 4 && !traditionalExtra && !mlTrained) {
+          feedback.innerHTML += '<br><br>🔎 <strong>Observa:</strong> “PREMIO” es un caso nuevo. Ahora modifica cada sistema usando los botones laterales y observa qué sucede en los siguientes mensajes.';
+        }
+      }
+
+      addRuleBtn.addEventListener('click', () => {
+        if (traditionalExtra) return;
+        traditionalExtra = true;
+        const li = document.createElement('li');
+        li.innerHTML = 'Si contiene <strong>“PREMIO”</strong> → SPAM';
+        rulesList.appendChild(li);
+        addRuleBtn.textContent = '✅ Regla añadida';
+        addRuleBtn.disabled = true;
+        phase.textContent = 'Modificación';
+        missionText.textContent = 'En el sistema tradicional una persona ha escrito una nueva regla explícita.';
+      });
+
+      trainBtn.addEventListener('click', () => {
+        if (mlTrained) return;
+        mlTrained = true;
+        ['PREMIO → SPAM','GANADOR → SPAM','Haz clic y gana dinero → SPAM'].forEach(txt => {
+          const li = document.createElement('li');
+          li.textContent = txt;
+          examplesList.appendChild(li);
+        });
+        trainBtn.textContent = '✅ Modelo reentrenado';
+        trainBtn.disabled = true;
+        phase.textContent = 'Reentrenamiento';
+        missionText.textContent = 'El modelo ha recibido nuevos ejemplos y ha ajustado los patrones que utiliza.';
+      });
+
+      spamBtn.addEventListener('click', () => answer(true));
+      normalBtn.addEventListener('click', () => answer(false));
+      nextBtn.addEventListener('click', nextMessage);
+
+      messageCard.addEventListener('dragstart', e => {
+        if (index < 0 || answered) {
+          e.preventDefault();
+          return;
+        }
+        e.dataTransfer.setData('text/plain','message');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      [dropSpam, dropNormal].forEach(zone => {
+        zone.addEventListener('dragover', e => {
+          e.preventDefault();
+          zone.classList.add('over');
+        });
+        zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+        zone.addEventListener('drop', e => {
+          e.preventDefault();
+          zone.classList.remove('over');
+          answer(zone === dropSpam);
+        });
+      });
+
+      restartBtn.addEventListener('click', () => {
+        index = -1;
+        hits = 0;
+        errors = 0;
+        traditionalExtra = false;
+        mlTrained = false;
+        answered = false;
+
+        rulesList.innerHTML = `
+          <li>Si contiene “GRATIS” → SPAM</li>
+          <li>Si contiene “OFERTA” → SPAM</li>`;
+
+        examplesList.innerHTML = `
+          <li>GRATIS → SPAM</li>
+          <li>OFERTA → SPAM</li>
+          <li>Reunión mañana → NO SPAM</li>
+          <li>Examen el jueves → NO SPAM</li>`;
+
+        logBody.innerHTML = '';
+        conclusion.classList.add('hidden');
+
+        addRuleBtn.disabled = false;
+        addRuleBtn.textContent = '👨‍💻 Añadir regla “PREMIO”';
+        trainBtn.disabled = false;
+        trainBtn.textContent = '📚 Añadir ejemplos y reentrenar';
+
+        nextBtn.disabled = false;
+        spamBtn.disabled = true;
+        normalBtn.disabled = true;
+
+        phase.textContent = 'Exploración';
+        missionText.textContent = 'Descubre cómo clasifican los mensajes dos sistemas diferentes.';
+        messageCard.textContent = 'Pulsa “Siguiente mensaje” para empezar';
+        messageCard.setAttribute('draggable','false');
+        feedback.textContent = 'Primero predices tú. Después verás qué hacen los dos sistemas.';
+        traditionalResult.textContent = 'Aún no se ha probado ningún mensaje.';
+        mlResult.textContent = 'Aún no se ha probado ningún mensaje.';
+        updateStats();
+      });
+
+      updateStats();
+    })();
+  </script>
+</body>
+</html>

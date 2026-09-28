@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Cómo funciona un sistema inteligente?</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --panel:#ffffff;
+      --card:#f8fafc;
+      --text:#1f2937;
+      --muted:#64748b;
+      --border:#dbe2ea;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --success:#15803d;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:24px}
+    h1,h2,h3,h4,p{margin-top:0}
+    .hero{
+      background:linear-gradient(135deg,#ffffff,#eef4ff);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:28px;
+      margin-bottom:20px;
+    }
+    .hero h1{font-size:clamp(28px,4vw,46px);margin-bottom:10px}
+    .hero p{color:var(--muted);font-size:18px;max-width:850px;margin-bottom:0}
+    .grid{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      gap:18px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+    }
+    .system-list{display:grid;gap:10px}
+    button{
+      font:inherit;
+      cursor:pointer;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      min-height:44px;
+    }
+    button:focus-visible, textarea:focus-visible{
+      outline:3px solid rgba(37,99,235,.25);
+      outline-offset:2px;
+    }
+    .system-btn{
+      text-align:left;
+      padding:12px 14px;
+      font-weight:700;
+    }
+    .system-btn.active{
+      border-color:var(--accent);
+      background:var(--accent-soft);
+    }
+    .topline{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .badge{
+      background:var(--accent-soft);
+      color:#1d4ed8;
+      padding:7px 11px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:14px;
+    }
+    .flow-wrap{overflow-x:auto;padding-bottom:4px;margin-top:18px}
+    .flow{
+      display:flex;
+      align-items:center;
+      min-width:850px;
+      gap:7px;
+    }
+    .step{
+      flex:1;
+      min-width:105px;
+      padding:12px 8px;
+      font-weight:700;
+      font-size:13px;
+      background:white;
+    }
+    .step.done{background:#f1f5f9}
+    .step.active{
+      border-color:var(--accent);
+      background:var(--accent-soft);
+    }
+    .step .icon{font-size:24px;display:block;margin-bottom:5px}
+    .arrow{color:var(--muted);font-size:20px}
+    .detail{
+      margin-top:18px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+    }
+    .detail-row{display:flex;gap:14px;align-items:flex-start}
+    .detail-icon{
+      width:50px;height:50px;border-radius:14px;
+      display:grid;place-items:center;
+      background:var(--accent-soft);
+      font-size:26px;flex:0 0 auto;
+    }
+    .muted{color:var(--muted)}
+    .small{font-size:13px}
+    .example{
+      margin-top:12px;
+      border:1px dashed var(--border);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+    .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .nav button,.action-btn{padding:10px 16px;font-weight:700}
+    .primary{
+      background:var(--accent);color:white;border-color:var(--accent);
+    }
+    .activity{margin-top:22px}
+    .challenge-head{
+      display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;
+    }
+    .challenge-card{
+      margin-top:14px;background:var(--card);border-radius:16px;padding:15px;border:1px solid var(--border)
+    }
+    label{display:block;font-weight:700;margin-top:16px}
+    textarea{
+      width:100%;margin-top:8px;resize:vertical;min-height:78px;
+      border:1px solid var(--border);border-radius:12px;padding:12px;
+      font:inherit;background:white;color:var(--text)
+    }
+    .feedback{
+      margin-top:18px;border:1px solid var(--border);
+      border-radius:16px;padding:16px;background:#fff;
+    }
+    .answer-box{
+      border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:10px;background:var(--card)
+    }
+    .key{
+      margin-top:22px;
+      padding:18px;
+      border-radius:18px;
+      background:#eef6ff;
+      border:1px solid #cfe1ff;
+    }
+    .key strong{display:block;margin-bottom:7px}
+    .hidden{display:none}
+    @media (max-width:820px){
+      .wrap{padding:14px}
+      .grid{grid-template-columns:1fr}
+      .system-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:540px){
+      .system-list{grid-template-columns:1fr}
+      .hero{padding:20px}
+      .panel{padding:14px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>¿Cómo funciona un sistema inteligente?</h1>
+      <p>Explora el recorrido completo desde la información que existe en el entorno hasta el resultado, la acción y la evaluación del sistema.</p>
+    </section>
+
+    <section class="grid">
+      <aside class="panel">
+        <h2>1. Elige un sistema</h2>
+        <div id="systemButtons" class="system-list"></div>
+      </aside>
+
+      <section class="panel">
+        <div class="topline">
+          <div>
+            <div class="small muted">Sistema seleccionado</div>
+            <h2 id="systemTitle"></h2>
+          </div>
+          <div id="stepCounter" class="badge">Paso 1 de 7</div>
+        </div>
+
+        <div class="flow-wrap">
+          <div id="flow" class="flow" aria-label="Etapas del sistema inteligente"></div>
+        </div>
+
+        <div class="detail" aria-live="polite">
+          <div class="detail-row">
+            <div id="detailIcon" class="detail-icon"></div>
+            <div>
+              <div id="detailStage" class="small muted"></div>
+              <h3 id="detailTitle"></h3>
+              <p id="detailText"></p>
+              <div id="exampleBox" class="example"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button id="prevBtn" type="button">← Anterior</button>
+          <button id="nextBtn" type="button" class="primary">Siguiente →</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel activity">
+      <div class="challenge-head">
+        <div>
+          <div class="small muted">Modo alumnado</div>
+          <h2>Ahora desmonta tú el sistema</h2>
+          <p class="muted">Completad las cinco preguntas y después comparad vuestra propuesta con una posible solución.</p>
+        </div>
+        <button id="randomBtn" type="button" class="action-btn">🎲 Sistema al azar</button>
+      </div>
+
+      <div id="challengeIntro" class="challenge-card"></div>
+
+      <form id="challengeForm">
+        <label>
+          1. ¿Qué información recibe del entorno?
+          <textarea id="q1" placeholder="Ej.: sonidos, imágenes, distancia..."></textarea>
+        </label>
+
+        <label>
+          2. ¿Cómo se representa esa información como datos?
+          <textarea id="q2" placeholder="Ej.: píxeles, números, texto..."></textarea>
+        </label>
+
+        <label>
+          3. ¿Qué procesamiento realiza?
+          <textarea id="q3" placeholder="¿Qué busca, compara, clasifica o predice?"></textarea>
+        </label>
+
+        <label>
+          4. ¿Qué resultado genera?
+          <textarea id="q4" placeholder="Ej.: una etiqueta, una predicción, una respuesta..."></textarea>
+        </label>
+
+        <label>
+          5. ¿Qué ocurre si se equivoca?
+          <textarea id="q5" placeholder="Piensa en las consecuencias del error."></textarea>
+        </label>
+
+        <div class="nav" style="justify-content:flex-start">
+          <button type="submit" class="primary action-btn">Comprobar actividad</button>
+          <button id="clearBtn" type="button" class="action-btn">Borrar respuestas</button>
+          <button id="resetBtn" type="button" class="action-btn">Reiniciar todo</button>
+        </div>
+      </form>
+
+      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    </section>
+
+    <section class="key">
+      <strong>Idea clave</strong>
+      <p>Un sistema inteligente no empieza directamente en el modelo. Primero necesita obtener información del entorno, convertirla en datos y procesarla. Después genera un resultado, puede provocar una acción y finalmente debemos evaluar si esa acción ha sido adecuada.</p>
+      <p><strong>ENTORNO → CAPTACIÓN → DATOS → PROCESAMIENTO / MODELO → RESULTADO → ACCIÓN → EVALUACIÓN</strong></p>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const stages = [
+        { key:'entorno', label:'Entorno', icon:'🌍', generic:'Es la realidad donde ocurre el problema. Aquí aparece la información que el sistema necesita observar.' },
+        { key:'captacion', label:'Captación', icon:'📡', generic:'Un sensor, dispositivo o fuente recoge información del entorno.' },
+        { key:'datos', label:'Datos', icon:'🔢', generic:'La información captada se transforma en una representación que el ordenador puede manejar.' },
+        { key:'modelo', label:'Procesamiento / modelo', icon:'🧠', generic:'Un algoritmo o modelo analiza los datos, busca patrones y calcula una respuesta.' },
+        { key:'resultado', label:'Resultado', icon:'🎯', generic:'El sistema produce una clasificación, predicción, recomendación, medida o respuesta.' },
+        { key:'accion', label:'Acción', icon:'⚙️', generic:'El resultado se utiliza para hacer algo: avisar, responder, recomendar o controlar un dispositivo.' },
+        { key:'evaluacion', label:'Evaluación', icon:'✅', generic:'Se comprueba si el resultado fue adecuado. Los errores permiten detectar limitaciones y, en algunos sistemas, mejorar el modelo.' }
+      ];
+
+      const systems = [
+        {
+          name:'Reconocimiento facial', icon:'🙂',
+          intro:'Una cámara intenta determinar si una cara corresponde con una persona conocida.',
+          detail:{
+            entorno:'Una persona se coloca delante de una cámara.',
+            captacion:'La cámara capta una imagen de su rostro.',
+            datos:'La imagen se representa mediante píxeles y características numéricas del rostro.',
+            modelo:'El modelo extrae características y las compara con patrones o representaciones almacenadas.',
+            resultado:'Genera una identidad probable o indica que no reconoce a la persona.',
+            accion:'Puede desbloquear un dispositivo, autorizar un acceso o solicitar otra comprobación.',
+            evaluacion:'Se comprueba si la identificación era correcta. Un falso positivo puede permitir el acceso a una persona equivocada.'
+          },
+          answers:[
+            'Imagen del rostro de una persona captada por una cámara.',
+            'Píxeles y características numéricas extraídas de la imagen.',
+            'Analiza características faciales y las compara con patrones aprendidos o registrados.',
+            'Una identidad probable o una indicación de no reconocimiento.',
+            'Puede confundir personas, negar un acceso legítimo o autorizar incorrectamente a otra persona.'
+          ]
+        },
+        {
+          name:'Filtro de spam', icon:'📧',
+          intro:'El sistema analiza un correo electrónico y decide si parece legítimo o no deseado.',
+          detail:{
+            entorno:'Llega un nuevo correo a la bandeja de entrada.',
+            captacion:'El sistema recibe el remitente, asunto, contenido y otros metadatos del mensaje.',
+            datos:'Las palabras, enlaces y características del mensaje se transforman en valores que puede analizar el algoritmo.',
+            modelo:'El modelo busca patrones asociados a correos normales y a spam.',
+            resultado:'Calcula una clasificación o probabilidad: spam / no spam.',
+            accion:'El correo se deja en la bandeja de entrada o se mueve a la carpeta de spam.',
+            evaluacion:'El usuario puede indicar que la clasificación fue incorrecta. Un error puede ocultar un correo importante o dejar pasar spam.'
+          },
+          answers:[
+            'Contenido del correo, remitente, asunto, enlaces y metadatos.',
+            'Texto y características transformadas en variables o representaciones numéricas.',
+            'Busca patrones y clasifica el mensaje según lo aprendido de otros correos.',
+            'Spam/no spam o una probabilidad de que sea spam.',
+            'Un mensaje legítimo puede acabar en spam o un correo no deseado puede llegar a la bandeja principal.'
+          ]
+        },
+        {
+          name:'Recomendador de música', icon:'🎵',
+          intro:'El sistema utiliza información sobre escuchas para proponer canciones que podrían gustar al usuario.',
+          detail:{
+            entorno:'Una persona escucha, salta, busca o guarda canciones.',
+            captacion:'La plataforma registra esas interacciones y características de las canciones.',
+            datos:'Las escuchas y preferencias se representan mediante historiales, categorías y valores numéricos.',
+            modelo:'El sistema busca semejanzas entre canciones, hábitos y perfiles de usuarios.',
+            resultado:'Calcula qué canciones podrían resultar relevantes.',
+            accion:'Muestra una lista, una radio personalizada o la siguiente canción recomendada.',
+            evaluacion:'Las nuevas interacciones permiten comprobar si las recomendaciones funcionaron. Un error puede producir recomendaciones poco relevantes.'
+          },
+          answers:[
+            'Historial de escucha, canciones guardadas, saltos, búsquedas y características musicales.',
+            'Registros, categorías y vectores o valores numéricos.',
+            'Busca patrones de preferencias y similitudes entre canciones o usuarios.',
+            'Una lista o puntuación de canciones recomendadas.',
+            'Puede recomendar música que no interesa al usuario y generar una experiencia menos útil.'
+          ]
+        },
+        {
+          name:'Ayuda al aparcamiento', icon:'🚗',
+          intro:'Un vehículo utiliza sensores para estimar la proximidad de obstáculos durante una maniobra.',
+          detail:{
+            entorno:'El vehículo se mueve cerca de paredes, coches, personas u otros obstáculos.',
+            captacion:'Sensores de proximidad y, según el vehículo, cámaras detectan lo que hay alrededor.',
+            datos:'Las señales se convierten en medidas de distancia, imágenes u otras variables.',
+            modelo:'El sistema calcula la proximidad y determina si existe riesgo de colisión.',
+            resultado:'Obtiene distancias, niveles de riesgo o una representación de los obstáculos.',
+            accion:'Emite pitidos, muestra avisos visuales o puede intervenir en la maniobra en sistemas más avanzados.',
+            evaluacion:'El conductor observa si el aviso correspondía con la realidad. Un fallo puede provocar un aviso innecesario o no advertir correctamente de un obstáculo.'
+          },
+          answers:[
+            'Distancia y presencia de obstáculos alrededor del vehículo; en algunos sistemas también imágenes.',
+            'Medidas numéricas de distancia, señales de sensores e imágenes.',
+            'Calcula proximidad y riesgo a partir de los datos recibidos.',
+            'Una distancia, nivel de riesgo o aviso de obstáculo.',
+            'Puede no detectar correctamente un obstáculo o emitir una alarma cuando no existe peligro real.'
+          ]
+        },
+        {
+          name:'Asistente de voz', icon:'🎙️',
+          intro:'El sistema recibe una petición hablada e intenta comprenderla para generar una respuesta o ejecutar una acción.',
+          detail:{
+            entorno:'Una persona formula una pregunta o una orden.',
+            captacion:'El micrófono capta las ondas sonoras de la voz.',
+            datos:'El audio se digitaliza y puede transformarse en características acústicas y texto.',
+            modelo:'Los modelos reconocen el habla, interpretan la intención y determinan una respuesta apropiada.',
+            resultado:'Genera una interpretación de la petición y una respuesta o instrucción.',
+            accion:'Responde con voz, muestra información o ejecuta una función permitida.',
+            evaluacion:'El usuario comprueba inmediatamente si el asistente entendió bien. Un error puede producir una respuesta incorrecta o ejecutar otra acción distinta.'
+          },
+          answers:[
+            'La voz y las palabras pronunciadas por la persona.',
+            'Audio digital, características acústicas y normalmente una representación textual.',
+            'Reconoce el habla e interpreta el significado o intención de la petición.',
+            'Una interpretación, respuesta o instrucción para otra función.',
+            'Puede entender mal una palabra, responder incorrectamente o ejecutar una acción distinta de la solicitada.'
+          ]
+        }
+      ];
+
+      let systemIndex = 0;
+      let stepIndex = 0;
+
+      const systemButtons = document.getElementById('systemButtons');
+      const flow = document.getElementById('flow');
+      const systemTitle = document.getElementById('systemTitle');
+      const stepCounter = document.getElementById('stepCounter');
+      const detailIcon = document.getElementById('detailIcon');
+      const detailStage = document.getElementById('detailStage');
+      const detailTitle = document.getElementById('detailTitle');
+      const detailText = document.getElementById('detailText');
+      const exampleBox = document.getElementById('exampleBox');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const challengeIntro = document.getElementById('challengeIntro');
+      const form = document.getElementById('challengeForm');
+      const feedback = document.getElementById('feedback');
+
+      function renderSystemButtons(){
+        systemButtons.innerHTML='';
+        systems.forEach((sys,i)=>{
+          const b=document.createElement('button');
+          b.type='button';
+          b.className='system-btn'+(i===systemIndex?' active':'');
+          b.textContent=sys.icon+' '+sys.name;
+          b.addEventListener('click',()=>{
+            systemIndex=i;
+            stepIndex=0;
+            clearAnswers();
+            render();
+          });
+          systemButtons.appendChild(b);
+        });
+      }
+
+      function renderFlow(){
+        flow.innerHTML='';
+        stages.forEach((stage,i)=>{
+          const b=document.createElement('button');
+          b.type='button';
+          b.className='step'+(i===stepIndex?' active':i<stepIndex?' done':'');
+          b.innerHTML='<span class="icon">'+stage.icon+'</span>'+stage.label;
+          b.addEventListener('click',()=>{
+            stepIndex=i;
+            renderFlow();
+            renderDetail();
+          });
+          flow.appendChild(b);
+          if(i<stages.length-1){
+            const arrow=document.createElement('span');
+            arrow.className='arrow';
+            arrow.textContent='→';
+            flow.appendChild(arrow);
+          }
+        });
+      }
+
+      function renderDetail(){
+        const stage=stages[stepIndex];
+        const sys=systems[systemIndex];
+
+        systemTitle.textContent=sys.icon+' '+sys.name;
+        stepCounter.textContent='Paso '+(stepIndex+1)+' de '+stages.length;
+        detailIcon.textContent=stage.icon;
+        detailStage.textContent=stage.label.toUpperCase();
+        detailTitle.textContent=stage.generic;
+        detailText.textContent=sys.detail[stage.key];
+        exampleBox.innerHTML='<strong>En este sistema:</strong> '+sys.detail[stage.key];
+
+        prevBtn.disabled=stepIndex===0;
+        nextBtn.textContent=stepIndex===stages.length-1?'Volver al inicio ↺':'Siguiente →';
+
+        challengeIntro.innerHTML=
+          '<div style="display:flex;gap:12px;align-items:flex-start">'+
+          '<div style="font-size:34px">'+sys.icon+'</div>'+
+          '<div><strong>'+sys.name+'</strong><p class="muted" style="margin-top:5px;margin-bottom:0">'+sys.intro+'</p></div>'+
+          '</div>';
+      }
+
+      function render(){
+        renderSystemButtons();
+        renderFlow();
+        renderDetail();
+        feedback.classList.add('hidden');
+      }
+
+      function clearAnswers(){
+        ['q1','q2','q3','q4','q5'].forEach(id=>{
+          document.getElementById(id).value='';
+        });
+        feedback.innerHTML='';
+        feedback.classList.add('hidden');
+      }
+
+      prevBtn.addEventListener('click',()=>{
+        if(stepIndex>0){
+          stepIndex--;
+          renderFlow();
+          renderDetail();
+        }
+      });
+
+      nextBtn.addEventListener('click',()=>{
+        stepIndex=stepIndex===stages.length-1?0:stepIndex+1;
+        renderFlow();
+        renderDetail();
+      });
+
+      document.getElementById('randomBtn').addEventListener('click',()=>{
+        let n=Math.floor(Math.random()*systems.length);
+        if(systems.length>1 && n===systemIndex) n=(n+1)%systems.length;
+        systemIndex=n;
+        stepIndex=0;
+        clearAnswers();
+        render();
+      });
+
+      document.getElementById('clearBtn').addEventListener('click',clearAnswers);
+
+      document.getElementById('resetBtn').addEventListener('click',()=>{
+        systemIndex=0;
+        stepIndex=0;
+        clearAnswers();
+        render();
+      });
+
+      function escapeHtml(text){
+        const d=document.createElement('div');
+        d.textContent=text;
+        return d.innerHTML;
+      }
+
+      form.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const values=['q1','q2','q3','q4','q5'].map(id=>document.getElementById(id).value.trim());
+
+        if(values.some(v=>!v)){
+          feedback.classList.remove('hidden');
+          feedback.innerHTML='<strong>⚠️ Aún falta alguna respuesta.</strong><p class="muted">Completad las cinco cuestiones antes de comparar vuestra propuesta.</p>';
+          return;
+        }
+
+        const labels=[
+          'Información de entrada',
+          'Representación como datos',
+          'Procesamiento',
+          'Resultado',
+          'Consecuencia de un error'
+        ];
+
+        const ans=systems[systemIndex].answers;
+
+        feedback.classList.remove('hidden');
+        feedback.innerHTML=
+          '<h3>🔎 Comparad vuestra respuesta con esta propuesta</h3>'+
+          '<p class="muted">No es necesario escribir exactamente lo mismo. Lo importante es identificar correctamente la función de cada parte.</p>'+
+          ans.map((a,i)=>
+            '<div class="answer-box">'+
+            '<strong>'+(i+1)+'. '+labels[i]+'</strong>'+
+            '<p><b>Vuestra respuesta:</b> '+escapeHtml(values[i])+'</p>'+
+            '<p><b>Propuesta:</b> '+a+'</p>'+
+            '</div>'
+          ).join('')+
+          '<div class="key" style="margin-top:14px"><strong>Pregunta final</strong> ¿Qué parte del sistema habría que modificar para reducir los errores?</div>';
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
