@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrenador de gestos de manos — ml5.js</title>
+<style>
+:root{color-scheme:light;--navy:#163456;--blue:#245e98;--teal:#087a7b;--ink:#20344d;--muted:#667b8d;--bg:#f2f5f9;--white:#fff;--border:#d8e2ed}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.42}
+header{background:linear-gradient(110deg,#163456,#176a78);padding:18px 24px;color:white}header h1{margin:0;font-size:23px}header p{margin:5px 0 0;color:#d6f0f4;font-size:13px}
+main{max-width:1050px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(320px,1fr);gap:16px}
+.panel{background:white;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 2px 10px #294c6709}h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:14px 0 8px}
+.camera{position:relative;background:#182536;border-radius:11px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+#camVideo video{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover;transform:scaleX(-1)}
+#landmarks{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none}
+.placeholder{color:#e8f0fa;text-align:center;padding:20px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+button{cursor:pointer;border:0;border-radius:8px;background:var(--blue);color:white;padding:10px 12px;font-weight:650;font-size:13px}button:hover{filter:brightness(.95)}button:disabled{opacity:.45;cursor:not-allowed}button.secondary{background:#edf4f8;color:#1f507c;border:1px solid #d5e4ee}button.danger{background:#fff0ef;color:#a03e37;border:1px solid #f1cac5}
+.status{background:#edf8f7;color:#146b66;border-radius:8px;padding:9px 11px;font-size:13px;min-height:37px}
+.capture-notice{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:11px 12px;border-radius:9px;background:#fff8e6;color:#76500d;border:1px solid #eed9a5;font-size:13px;font-weight:600}
+.capture-notice[hidden]{display:none}
+.capture-notice span:nth-child(2){flex:1}
+.spinner{width:17px;height:17px;border:3px solid #e7d3a3;border-top-color:#97660b;border-radius:50%;animation:spin .85s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spinner{animation:none}}
+.gestures{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:12px 0}
+.gesture{border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}.gesture .name{font-weight:700;font-size:15px;overflow-wrap:anywhere}.gesture .count{font-size:12px;color:var(--muted);margin:3px 0 8px}.gesture .manage{display:flex;gap:5px;margin-top:6px}.gesture .train{width:100%;font-size:12px;padding:9px 5px}.gesture .manage button{flex:1;min-width:0;font-size:11px;padding:7px 3px}.class-editor{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.class-editor input{flex:1;min-width:130px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px}.class-help{margin:8px 0 2px}.empty{grid-column:1/-1;color:var(--muted);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:8px}
+.readout{background:#eff4fb;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:10px}.readout strong{font-size:21px}.readout small{display:block;color:var(--muted)}
+.helper{font-size:12px;color:var(--muted);line-height:1.5}.sep{border:0;border-top:1px solid var(--border);margin:16px 0}
+input[type=file]{font-size:12px;max-width:100%}.footer{max-width:1050px;margin:0 auto 20px;padding:0 18px;font-size:12px;color:var(--muted)}
+@media(max-width:700px){main{padding:10px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@2.0.5/lib/p5.min.js"></script>
+<script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+
+<style>
+.gestos-site-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:10px 24px;background:#0e2338;color:#f1f9fc;font:600 13px/1.5 system-ui,sans-serif}
+.gestos-site-nav a{color:#e2f6f6;text-decoration:none;display:inline-block;padding:6px 10px;border-radius:7px}.gestos-site-nav a:hover,.gestos-site-nav a:focus-visible{background:#ffffff1b}
+.gestos-site-nav .gestos-brand{font-size:15px;font-weight:800;letter-spacing:-.3px}.gestos-site-nav .gestos-brand b{color:#7ee3d8}
+</style>
+</head>
+<body>
+<nav class="gestos-site-nav" aria-label="Navegación del proyecto"><a class="gestos-brand" href="../index.html">✳ Gestos<b>IA</b></a><div><a href="../index.html">Inicio</a><a href="../extension.html">Extensión y guía PDF ↗</a></div></nav>
+
+<header><h1>Entrenador de gestos de manos · ml5.js</h1><p>Crea tus propias clases, entrena y valida los gestos · Exporta tu modelo para TurboWarp</p></header>
+<main>
+<section class="panel">
+<h2>Entrenar y validar gestos</h2>
+<div class="camera" id="camStage"><div id="camVideo"></div><canvas id="landmarks" width="640" height="480"></canvas><div id="placeholder" class="placeholder">📷<br>Activa la webcam para empezar</div></div>
+<div id="captureNotice" class="capture-notice" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span><span id="captureNoticeText">Preparando reconocimiento de la mano…</span><button type="button" id="cancelCapture" class="secondary" title="Cancelar la captura actual">Cancelar</button></div>
+<div class="bar"><button id="startCam">Activar cámara</button><span class="helper">Requiere conexión y abrir desde localhost o HTTPS.</span></div>
+<div id="status" class="status" role="status">Empieza creando tu primera clase de gesto; después activa la cámara.</div>
+<h3>Clases de gestos personalizadas</h3>
+<div class="class-editor"><input id="className" type="text" maxlength="50" placeholder="Nombre: corazón, saludo, victoria…" aria-label="Nombre de la nueva clase"><button id="addClass">+ Añadir clase</button><button class="secondary" id="newSet">Borrar todo y empezar de cero</button></div>
+<p class="helper class-help">Añade, renombra, vacía o elimina clases sin límite predefinido. Renombrar conserva los ejemplos; «Vaciar» permite repetir el entrenamiento de una sola clase.</p>
+<div class="gestures" id="gestureCards"></div>
+<p class="helper">Pulsa «Capturar 20» junto a una clase y mantén el gesto variando la posición. Para comenzar a clasificar hacen falta al menos <strong>dos clases con 8 ejemplos cada una</strong>; puedes mejorar el resultado añadiendo capturas.</p>
+<div class="readout"><div><small>Gesto reconocido</small><strong id="recognized">Sin entrenar</strong></div><div style="text-align:right"><small>Coincidencia KNN</small><strong id="confidence">—</strong></div></div>
+<div class="bar"><button class="secondary" id="saveData">Exportar modelo para TurboWarp (JSON)</button><button class="secondary" id="loadButton">Cargar aprendizaje</button><input type="file" id="loadFile" accept=".json,application/json" hidden><button class="danger" id="clearData">Borrar ejemplos</button></div>
+<div class="helper">ml5.js identifica articulaciones; nuestro clasificador KNN utiliza los ejemplos de sus coordenadas normalizadas. La coincidencia no es una probabilidad calibrada. Los ejemplos se mantienen en memoria hasta descargarlos.</div>
+<div class="status" style="background:#f4f8fe;color:#20486e;margin-top:16px">
+<strong>Destino del archivo JSON: TurboWarp.</strong> Esta página solamente entrena y valida gestos. En TurboWarp se cargará el JSON mediante una extensión y se programará el videojuego por bloques.
+</div>
+</section>
+</main>
+<div class="footer">Prototipo didáctico de clases personalizadas · Dependencias externas: p5.js y ml5.js. La cámara y los datos de entrenamiento se procesan en el navegador; el modelo HandPose se descarga al iniciarlo. No se envían automáticamente ejemplos de los alumnos a un servidor.</div>
+<script>
+'use strict';
+// IDs estables: cambiar el nombre de una clase no rompe los ejemplos exportados.
+const classes = []; // Inicio vacío: cada pareja debe crear y nombrar sus propias clases.
+let nextId=1;
+const $ = id => document.getElementById(id);
+const samples = [];
+const className = id => classes.find(c=>c.id===id)?.name ?? '(clase eliminada)';
+function uniqueName(name,exceptId=null){return !classes.some(c=>c.id!==exceptId && c.name.toLocaleLowerCase('es')===name.toLocaleLowerCase('es'));}
+function resetRecognition(){seenLabel=null;seenCount=0;activeLabel=null;displayGesture(null,null);}
+function createClassCard(c){
+ const card=document.createElement('div');card.className='gesture';
+ const title=document.createElement('div');title.className='name';title.textContent=c.name;card.append(title);
+ const count=document.createElement('div');count.className='count';count.id='n'+c.id;card.append(count);
+ const train=document.createElement('button');train.className='train';train.type='button';train.dataset.train=c.id;train.textContent='Capturar 20';train.disabled=!cameraReady||!!collecting;train.addEventListener('click',()=>capture(c.id));card.append(train);
+ const manage=document.createElement('div');manage.className='manage';
+ const rename=document.createElement('button');rename.className='secondary';rename.type='button';rename.textContent='Renombrar';rename.addEventListener('click',()=>renameClass(c.id));
+ const remove=document.createElement('button');remove.className='danger';remove.type='button';remove.textContent='Eliminar';remove.addEventListener('click',()=>removeClass(c.id));
+ const clearOne=document.createElement('button');clearOne.className='secondary';clearOne.type='button';clearOne.textContent='Vaciar';clearOne.title='Borrar solo los ejemplos de esta clase';clearOne.addEventListener('click',()=>clearClassSamples(c.id));
+ manage.append(rename,clearOne,remove);card.append(manage);return card;
+}
+function renderClasses(){
+ const host=$('gestureCards');host.replaceChildren();
+ if(!classes.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='Todavía no tienes clases. Escribe un nombre y pulsa «Añadir clase».';host.append(empty);}
+ for(const c of classes)host.append(createClassCard(c));
+ updateCounts();
+}
+function afterClassesChanged(message){renderClasses();resetRecognition();setStatus(message);}
+function addClass(name){
+ name=name.trim().replace(/\s+/g,' ');
+ if(!name||name.length>50){setStatus('Escribe un nombre de entre 1 y 50 caracteres.');return false;}
+ if(!uniqueName(name)){setStatus('Ya existe una clase con ese nombre.');return false;}
+ let id;do{id='CLASE_'+nextId++;}while(classes.some(c=>c.id===id));
+ classes.push({id,name});afterClassesChanged('Clase «'+name+'» creada. Ya puedes capturar sus ejemplos.');return true;
+}
+function renameClass(id){
+ if(collecting){setStatus('Termina la captura antes de modificar las clases.');return;}
+ const c=classes.find(c=>c.id===id);if(!c)return;
+ const proposed=prompt('Nuevo nombre para la clase:',c.name);if(proposed===null)return;
+ const name=proposed.trim().replace(/\s+/g,' ');
+ if(!name||name.length>50||!uniqueName(name,id)){setStatus('Nombre inválido, demasiado largo o repetido.');return;}
+ c.name=name;afterClassesChanged('Clase renombrada como «'+name+'». Se conservan sus ejemplos.');
+}
+function clearClassSamples(id){
+ if(collecting){setStatus('Termina la captura antes de borrar ejemplos.');return;}
+ const c=classes.find(c=>c.id===id);if(!c)return;
+ const n=samples.filter(s=>s.label===id).length;
+ if(!n){setStatus('La clase «'+c.name+'» todavía no tiene ejemplos.');return;}
+ if(!confirm('¿Borrar los '+n+' ejemplos de «'+c.name+'»? La clase se conservará.'))return;
+ for(let i=samples.length-1;i>=0;i--)if(samples[i].label===id)samples.splice(i,1);
+ updateCounts();resetRecognition();setStatus('Se han borrado los ejemplos de «'+c.name+'». Puedes volver a capturarlos.');
+}
+function removeClass(id){
+ if(collecting){setStatus('Termina la captura antes de eliminar clases.');return;}
+ const c=classes.find(c=>c.id===id);if(!c)return;
+ const n=samples.filter(s=>s.label===id).length;
+ if(!confirm('¿Eliminar «'+c.name+'» y sus '+n+' ejemplos? Esta operación no se puede deshacer.'))return;
+ classes.splice(classes.findIndex(x=>x.id===id),1);
+ for(let i=samples.length-1;i>=0;i--)if(samples[i].label===id)samples.splice(i,1);
+ afterClassesChanged('Clase «'+c.name+'» eliminada.');
+}
+$('addClass').addEventListener('click',()=>{if(addClass($('className').value))$('className').value='';});
+$('className').addEventListener('keydown',e=>{if(e.key==='Enter'){$('addClass').click();}});
+$('newSet').addEventListener('click',()=>{
+ if(collecting){setStatus('Termina la captura actual primero.');return;}
+ if(!confirm('¿Crear un conjunto vacío? Se eliminarán todas las clases y ejemplos actuales. Guarda antes tu JSON.'))return;
+ classes.length=0;samples.length=0;afterClassesChanged('Conjunto vacío. Añade una clase con el nombre que quieras.');
+});
+let handPose=null, camera=null, p5inst=null, cameraReady=false;
+let collecting=null, lastGrab=0, lastFeature=null, lastDetectedAt=0;
+let seenLabel=null, seenCount=0, activeLabel=null, missingFrames=0;
+const ctx = $('landmarks').getContext('2d');
+function setStatus(msg){$('status').textContent=msg;}
+function showCaptureNotice(message){
+ $('captureNoticeText').textContent=message;
+ $('captureNotice').hidden=false;
+}
+function hideCaptureNotice(){$('captureNotice').hidden=true;}
+function finishCapture(message){
+ collecting=null;
+ hideCaptureNotice();
+ enableTrain(cameraReady);
+ setStatus(message);
+}
+$('cancelCapture').addEventListener('click',()=>{
+ if(collecting)finishCapture('Captura cancelada. Los ejemplos registrados se conservan; puedes continuar más tarde.');
+});
+function updateCounts(){const counts=new Map(classes.map(c=>[c.id,0]));for(const s of samples)if(counts.has(s.label))counts.set(s.label,counts.get(s.label)+1);for(const c of classes){const el=$('n'+c.id);if(el){const n=counts.get(c.id);el.textContent=n+' '+(n===1?'ejemplo':'ejemplos');}}}
+function displayGesture(label,match){$('recognized').textContent=label?className(label):'—'; $('confidence').textContent=Number.isFinite(match)?Math.round(match*100)+' %':'—';}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+// Normalización: origen en la muñeca, escala por palma, rotación por eje de la palma,
+// y espejo opcional para hacer coherentes las manos izquierda y derecha.
+function getFeatures(hand){
+  if(!hand || !hand.keypoints || hand.keypoints.length!==21)return null;
+  const p=hand.keypoints,w=p[0],base=p[9];
+  const scale=dist(w,base);
+  if(!Number.isFinite(scale) || scale<8)return null;
+  const angle=-Math.PI/2-Math.atan2(base.y-w.y,base.x-w.x);
+  const cos=Math.cos(angle),sin=Math.sin(angle);
+  let coords=p.map(q=>{
+    const dx=(q.x-w.x)/scale,dy=(q.y-w.y)/scale;
+    return [dx*cos-dy*sin,dx*sin+dy*cos];
+  });
+  // El nudillo del índice queda siempre a un mismo lado del meñique.
+  if(coords[5][0]>coords[17][0])coords=coords.map(([x,y])=>[-x,y]);
+  return coords.flat().map(v=>Math.round(v*1000)/1000);
+}
+function classify(f){
+ if(!f)return null;
+ const counts=new Map(classes.map(c=>[c.id,0]));
+ for(const s of samples)if(counts.has(s.label))counts.set(s.label,counts.get(s.label)+1);
+ const ready=classes.filter(c=>counts.get(c.id)>=8);
+ if(ready.length<2)return null;
+ const allowed=new Set(ready.map(c=>c.id));
+ const near=samples.filter(s=>allowed.has(s.label))
+   .map(s=>({label:s.label,d:s.features.reduce((sum,v,i)=>sum+(v-f[i])**2,0)}))
+   .sort((a,b)=>a.d-b.d).slice(0,7);
+ const scores=Object.fromEntries(ready.map(c=>[c.id,0]));
+ let total=0;
+ for(const n of near){const w=1/(0.15+n.d);scores[n.label]+=w;total+=w;}
+ const label=ready.reduce((best,c)=>scores[c.id]>scores[best]?c.id:best,ready[0].id);
+ const match=scores[label]/total;
+ if(!Number.isFinite(match)||match<0.70||near[0].d>9)return {label:null,match};
+ return {label,match};
+}
+function drawPoints(hand){
+  ctx.clearRect(0,0,640,480);
+  if(!hand||!hand.keypoints)return;
+  const p=hand.keypoints;
+  const chains=[[0,1,2,3,4],[0,5,6,7,8],[0,9,10,11,12],[0,13,14,15,16],[0,17,18,19,20],[5,9,13,17]];
+  ctx.lineWidth=3;ctx.strokeStyle='#1ee1d0';
+  for(const c of chains){ctx.beginPath(); c.forEach((id,i)=>{const q=p[id];if(i===0)ctx.moveTo(q.x,q.y);else ctx.lineTo(q.x,q.y);});ctx.stroke();}
+  for(const q of p){ctx.beginPath();ctx.arc(q.x,q.y,4,0,Math.PI*2);ctx.fillStyle='#fff5ad';ctx.fill();}
+}
+function stableRecognition(label){
+  if(label!==seenLabel){seenLabel=label;seenCount=1;return;}
+  seenCount++;
+  if(seenCount>=5 && activeLabel!==label){activeLabel=label;}
+}
+function gotHands(results){
+  const hand=Array.isArray(results)&&results.length?results[0]:null;
+  drawPoints(hand);
+  const f=getFeatures(hand);
+  if(!f){
+    missingFrames++;
+    if(missingFrames>=8){lastFeature=null;stableRecognition(null);displayGesture(null,null);}
+    return;
+  }
+  missingFrames=0;lastFeature=f;lastDetectedAt=Date.now();
+  if(collecting && Date.now()-lastGrab>=130){
+    const isFirstSample=!collecting.started;
+    samples.push({label:collecting.label,features:[...f]});
+    lastGrab=Date.now();collecting.remaining--;
+    collecting.started=true;
+    updateCounts();
+    if(collecting.remaining<=0){
+      finishCapture('✓ Captura completada: 20 ejemplos de «'+className(collecting.label)+'» registrados. Ya puedes validarla o entrenar otra clase.');
+    }else{
+      const taken=20-collecting.remaining;
+      if(isFirstSample)showCaptureNotice('✓ Mano detectada. Capturando «'+className(collecting.label)+'»… '+taken+'/20 ejemplos. Mantén el gesto visible.');
+      else $('captureNoticeText').textContent='Capturando «'+className(collecting.label)+'»… '+taken+'/20 ejemplos. Mantén el gesto visible.';
+      setStatus('Reconocimiento iniciado. Registrados '+taken+' de 20 ejemplos de «'+className(collecting.label)+'».');
+    }
+  }
+  const result=classify(f);
+  displayGesture(result?.label??null,result?.match??null);
+  stableRecognition(result?.label??null);
+}
+function enableTrain(enabled){document.querySelectorAll('[data-train]').forEach(btn=>btn.disabled=!enabled);}
+function capture(label){
+  if(!cameraReady){setStatus('Primero activa la cámara.');return;}
+  if(collecting||!classes.some(c=>c.id===label))return;
+  collecting={label,remaining:20,started:false};lastGrab=0;enableTrain(false);
+  const waiting='⏳ Espera un momento: iniciando reconocimiento de «'+className(label)+'». La primera detección puede tardar varios segundos. Mantén la mano visible; la captura comenzará automáticamente.';
+  showCaptureNotice(waiting);
+  setStatus(waiting);
+}
+new p5(p=>{p.setup=()=>{p.noCanvas();p5inst=p;};});
+async function startCamera(){
+  if(cameraReady)return;
+  if(!navigator.mediaDevices?.getUserMedia){setStatus('Necesitas HTTPS o http://localhost para acceder a la webcam.');return;}
+  if(!p5inst||!window.ml5){setStatus('Las bibliotecas no han cargado. Comprueba tu conexión.');return;}
+  $('startCam').disabled=true;setStatus('Solicitando permiso para la cámara...');
+  try{
+    camera=p5inst.createCapture(p5inst.VIDEO,()=>{});
+    camera.size(640,480);camera.parent('camVideo');
+    camera.elt.setAttribute('playsinline','');
+    // Esperamos a que el vídeo disponga de imágenes antes de arrancar el modelo.
+    await new Promise((resolve,reject)=>{
+      if(camera.elt.readyState>=2){resolve();return;}
+      const timeout=setTimeout(()=>reject(new Error('La cámara no ha respondido. Comprueba sus permisos.')),15000);
+      camera.elt.addEventListener('loadeddata',()=>{clearTimeout(timeout);resolve();},{once:true});
+    });
+    $('placeholder').style.display='none';
+    setStatus('Cámara activa. Cargando ml5.js HandPose...');
+    handPose=await ml5.handPose({maxHands:1});
+    handPose.detectStart(camera,gotHands);
+    cameraReady=true;enableTrain(true);
+    setStatus('HandPose activo. Puedes capturar ejemplos para cualquiera de tus clases.');
+    $('startCam').textContent='Cámara activada';
+  }catch(err){console.error(err);setStatus('No se pudo iniciar: '+(err?.message||err));$('startCam').disabled=false;}
+}
+$('startCam').addEventListener('click',startCamera);
+function downloadJSON(name,data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+// v2 exporta nombres de clases e IDs persistentes; v1 antiguo continúa siendo importable.
+$('saveData').addEventListener('click',()=>downloadJSON('modelo_gestos_para_turbowarp.json',{
+ format:'gestos-blockly-knn-v2',featureCount:42,
+ classes:classes.map(c=>({...c})),samples:samples.map(s=>({label:s.label,features:[...s.features]}))
+}));
+$('loadButton').addEventListener('click',()=>$('loadFile').click());
+$('loadFile').addEventListener('change',async e=>{
+ try{
+  const file=e.target.files?.[0];if(!file)return;
+  if(collecting)throw new Error('Termina primero la captura actual.');
+  const raw=JSON.parse(await file.text());
+  let incoming;
+  if(raw.format==='gestos-blockly-knn-v1'){
+    incoming=[{id:'PIEDRA',name:'Piedra'},{id:'PAPEL',name:'Papel'},{id:'TIJERAS',name:'Tijeras'}];
+  }else if(raw.format==='gestos-blockly-knn-v2'&&Array.isArray(raw.classes)){
+    incoming=raw.classes;
+  }else throw new Error('No es un JSON de este entrenador.');
+  if(!Array.isArray(raw.samples)||raw.samples.length>50000||incoming.length>1000 ||
+     !incoming.every(c=>c&&typeof c.id==='string'&&/^[A-Za-z0-9_-]{1,60}$/.test(c.id)&&typeof c.name==='string'&&c.name.trim().length>0&&c.name.length<=50)||
+     new Set(incoming.map(c=>c.id)).size!==incoming.length||
+     new Set(incoming.map(c=>c.name.trim().toLocaleLowerCase('es'))).size!==incoming.length)throw new Error('Clases o ejemplos incorrectos.');
+  const ids=new Set(incoming.map(c=>c.id));
+  if(!raw.samples.every(s=>ids.has(s.label)&&Array.isArray(s.features)&&s.features.length===42&&s.features.every(v=>typeof v==='number'&&Number.isFinite(v))))throw new Error('Ejemplos de entrenamiento incompatibles.');
+  classes.splice(0,classes.length,...incoming.map(c=>({id:c.id,name:c.name.trim()})));
+  samples.splice(0,samples.length,...raw.samples.map(s=>({label:s.label,features:[...s.features]})));
+  nextId=Math.max(nextId,1,...classes.map(c=>c.id.match(/^CLASE_(\d+)$/)?.[1]||0).map(Number))+1;
+  afterClassesChanged('Modelo importado: '+classes.length+' clases y '+samples.length+' ejemplos.');
+ }catch(err){setStatus('Error al cargar JSON: '+err.message);}
+ e.target.value='';
+});
+$('clearData').addEventListener('click',()=>{if(!confirm('¿Borrar todos los ejemplos capturados? Guarda antes el JSON si quieres conservarlos.'))return;samples.length=0;updateCounts();seenLabel=null;activeLabel=null;displayGesture(null,null);setStatus('Ejemplos borrados.');});
+// El entrenamiento se exporta a JSON; la programación se realizará en TurboWarp.
+renderClasses();
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#12283f">
+<title>GestosIA · Entrena gestos y programa con TurboWarp</title>
+<meta name="description" content="Entrena tus propios gestos con la webcam, guarda el modelo JSON y úsalo para programar videojuegos con TurboWarp.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#contenido">Ir al contenido</a>
+<header class="site-header"><div class="container">
+  <a class="brand" href="index.html" aria-label="Gestos IA: página de inicio"><span class="brand-mark" aria-hidden="true">✳</span><span class="brand-text">Gestos<span>IA</span></span></a>
+  <nav class="nav" aria-label="Navegación principal"><a href="index.html" aria-current="page">Inicio</a><a href="entrenador/index.html">Entrenador</a><a href="extension.html" >Extensión y guía</a></nav>
+</div></header>
+<main id="contenido">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Laboratorio de inteligencia artificial · Bachillerato</span>
+        <h1>Entrena tus gestos. <em>Programa tus ideas.</em></h1>
+        <p>Crea clases de gestos con la webcam, valida tu propio modelo y úsalo para controlar un videojuego. Primero aprende la IA; después programa con bloques en TurboWarp.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="entrenador/index.html">Comenzar a entrenar <span aria-hidden="true">→</span></a>
+          <a class="btn btn-light" href="extension.html">Ir a la extensión y la guía <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Ejemplo de clases de gestos que puedes crear">
+        <div class="demo-top"><span><span class="live-dot"></span>Entrenamiento personalizado</span><span>3 clases de ejemplo</span></div>
+        <div class="gesture-preview"><div class="gesture-card selected">✊<span>Piedra</span></div><div class="gesture-card">✋<span>Papel</span></div><div class="gesture-card">✌️<span>Tijeras</span></div></div>
+        <div class="demo-bottom"><span>Los alumnos elegirán sus propias clases.</span><strong>JSON → TurboWarp</strong></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><span class="kicker">Dos fases, un proyecto</span><h2>Del aprendizaje automático al videojuego</h2><p class="subcopy">Cada pareja crea su propio reconocedor y luego programa el comportamiento del juego con bloques. No necesita escribir Python ni JavaScript.</p></div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-top"><span class="icon-tile" aria-hidden="true">◉</span><div><span class="tiny-phase">Fase 01 · Entrenamiento</span><h3>Entrenador de gestos</h3></div></div>
+          <p>Utiliza la cámara y los 21 puntos de la mano para capturar ejemplos. Tú decides qué gestos aprenderá el clasificador.</p>
+          <ul class="bullets"><li>Comienza sin clases predeterminadas</li><li>Añade y renombra las clases libremente</li><li>Captura ejemplos y valida las predicciones</li><li>Descarga tu aprendizaje como archivo JSON</li></ul>
+          <a class="btn btn-primary" href="entrenador/index.html">Abrir el entrenador <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="card">
+          <div class="card-top"><span class="icon-tile" aria-hidden="true">▦</span><div><span class="tiny-phase">Fase 02 · Programación</span><h3>TurboWarp y extensión</h3></div></div>
+          <p>Descarga nuestra extensión JavaScript, impórtala en TurboWarp y carga el JSON creado en la fase anterior.</p>
+          <ul class="bullets"><li>Extensión descargable en formato .js</li><li>Guía PDF visible en la propia web</li><li>Bloques de reconocimiento de gestos</li><li>Programación con variables, eventos y condicionales</li></ul>
+          <a class="btn btn-outline" href="extension.html">Descargar extensión y ver guía <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+      <p class="note-band"><strong>Antes de empezar:</strong> utiliza Chrome o Edge, permite el acceso a la webcam y abre el entrenador desde HTTPS o <code>localhost</code>. Para utilizar ml5.js es necesaria una conexión a Internet que permita descargar sus bibliotecas y el modelo HandPose.</p>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="container"><span>GestosIA · Proyecto didáctico de reconocimiento de manos y programación por bloques</span><a href="extension.html">Guía de TurboWarp y descargas</a></div></footer>
+</body></html>

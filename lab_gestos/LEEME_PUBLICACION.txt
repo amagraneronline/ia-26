@@ -1,0 +1,68 @@
+GESTOSIA — ENLACES AL ENTRENADOR Y A TURBOWARP
+==============================================
+
+CONTENIDO DE LA WEB
+
+index.html
+  Página de inicio con un botón que enlaza al entrenador
+  y otro que abre la página de la extensión y el PDF.
+
+entrenador/index.html
+  Entrenador de gestos con ml5.js y clases creadas por el alumnado.
+  No incluye Blockly ni clases predeterminadas.
+
+extension.html
+  Página que permite descargar la extensión .js, contiene una
+  guía rápida e incrusta el PDF completo para seguir los pasos.
+
+descargas/gestos-turbowarp.js
+  Extensión personalizable para TurboWarp.
+
+guia/Guia_Importar_Modelo_Gestos_TurboWarp.pdf
+  Guía de importación de modelos entrenados.
+
+assets/site.css
+  Estilos visuales de las dos páginas de acceso.
+
+CÓMO PUBLICARLA
+
+Sube el CONTENIDO de la carpeta Web_Gestos_Entrenador_TurboWarp
+(como conjunto, conservando las subcarpetas) a un alojamiento web estático
+con HTTPS. Por ejemplo, GitHub Pages, un servidor web del centro o una
+plataforma que permita servir archivos HTML, JS y PDF.
+
+Una vez publicada, la dirección principal será la URL de index.html.
+La segunda página estará en la misma URL, terminada en /extension.html.
+
+PRUEBA LOCAL EN WINDOWS
+
+Si dispones de Python y quieres probarla en tu ordenador, abre una
+terminal dentro de esta carpeta y ejecuta:
+
+  py -m http.server 8000
+
+Luego abre http://localhost:8000 en Chrome o Edge.
+
+FUNCIONAMIENTO
+
+FASE 1. En el entrenador, cada pareja crea clases desde cero,
+        captura y valida gestos, y descarga su archivo .json.
+FASE 2. En TurboWarp, descarga el archivo .js desde la página
+        de extensión. Cárgalo como Custom Extension > File,
+        marcando "Run extension without sandbox".
+FASE 3. Pulsa el bloque "cargar modelo JSON de gestos" para elegir
+        el .json de esa pareja. Activa la webcam y programa con bloques.
+
+NOTAS IMPORTANTES
+
+* La webcam requiere HTTPS o http://localhost y permiso del usuario.
+* ml5.js y HandPose se descargan en tiempo de ejecución: se necesita
+  conexión a Internet para utilizar el entrenador y la extensión.
+* La extensión de TurboWarp debe cargarse como ARCHIVO LOCAL .js;
+  no basta con pegar la URL de un archivo JS alojado en un servidor
+  externo para ejecutarla sin sandbox. Así lo indica TurboWarp.
+* El archivo JSON y el proyecto Scratch (.sb3) se guardan por separado.
+* La extensión se ejecuta sin sandbox, con acceso amplio al navegador.
+  El profesorado debe revisar el archivo antes de distribuirlo.
+* La guía PDF incrustada puede requerir un navegador con visor PDF.
+  Si no se muestra, la página ofrece un enlace de apertura y descarga.

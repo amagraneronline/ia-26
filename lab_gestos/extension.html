@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#12283f">
+<title>Extensión TurboWarp y guía PDF · GestosIA</title>
+<meta name="description" content="Descarga la extensión JavaScript para TurboWarp y consulta la guía PDF incrustada para importar tu modelo de gestos JSON.">
+<link rel="stylesheet" href="assets/site.css"></head><body>
+<a class="skip" href="#contenido">Ir al contenido</a>
+<header class="site-header"><div class="container">
+  <a class="brand" href="index.html" aria-label="Gestos IA: página de inicio"><span class="brand-mark" aria-hidden="true">✳</span><span class="brand-text">Gestos<span>IA</span></span></a>
+  <nav class="nav" aria-label="Navegación principal"><a href="index.html" >Inicio</a><a href="entrenador/index.html">Entrenador</a><a href="extension.html" aria-current="page">Extensión y guía</a></nav>
+</div></header>
+<main id="contenido">
+<section class="intro"><div class="container"><div class="breadcrumbs"><a href="index.html">Inicio</a> / Extensión y guía PDF</div><span class="eyebrow">Fase 02 · Programación por bloques</span><h1>Tu modelo, ahora en TurboWarp</h1><p>Descarga la extensión, incorpórala al editor TurboWarp y carga el archivo JSON que entrenaste. Sigue los pasos en la guía PDF sin salir de esta página.</p></div></section>
+<section class="section"><div class="container">
+  <div class="download-panel">
+    <div class="file-meta"><span class="file-symbol" aria-hidden="true">JS</span><div><h2>Extensión de gestos para TurboWarp</h2><p>gestos-turbowarp.js · archivo JavaScript</p></div></div>
+    <a class="btn btn-primary" href="descargas/gestos-turbowarp.js" download="gestos-turbowarp.js">↓ Descargar extensión .js</a>
+  </div>
+  <div class="extension-layout">
+    <div class="pdf-card">
+      <div class="pdf-card-head"><div><h2>Guía de importación · PDF</h2><p>2 páginas · instalación, carga del modelo, cámara y primeros bloques</p></div><a class="btn btn-outline btn-sm" href="guia/Guia_Importar_Modelo_Gestos_TurboWarp.pdf" download="Guia_Importar_Modelo_Gestos_TurboWarp.pdf">↓ Descargar PDF</a></div>
+      <iframe class="pdf-frame" loading="lazy" title="Guía PDF paso a paso para importar el modelo de gestos en TurboWarp" src="guia/Guia_Importar_Modelo_Gestos_TurboWarp.pdf#view=FitH&toolbar=1" allow="fullscreen"></iframe>
+      <div class="pdf-fallback"><span>¿Tu navegador no muestra el documento incrustado?</span><a href="guia/Guia_Importar_Modelo_Gestos_TurboWarp.pdf" target="_blank" rel="noopener noreferrer">Abrir PDF en una pestaña nueva ↗</a></div>
+    </div>
+    <aside class="side" aria-label="Instrucciones rápidas y ayuda">
+      <div class="aside-card"><h2>Instalación en 5 pasos</h2><ol class="steps">
+        <li><strong>Descarga el archivo .js</strong>Utiliza el botón superior. No necesitas un ZIP.</li>
+        <li><strong>Abre TurboWarp</strong>Entra en el editor desde el navegador.</li>
+        <li><strong>Añade una extensión personalizada</strong>Selecciona Custom Extension → File.</li>
+        <li><strong>Cárgala sin sandbox</strong>Elige el archivo .js y activa «Run extension without sandbox».</li>
+        <li><strong>Importa tu JSON</strong>Pulsa el bloque «cargar modelo JSON de gestos» y después activa la cámara.</li>
+      </ol><a class="btn btn-outline btn-sm" href="https://turbowarp.org/editor" target="_blank" rel="noopener noreferrer">Abrir TurboWarp ↗</a></div>
+      <div class="aside-card soft"><h2>¿Qué archivo necesito?</h2><p style="font-size:13px;margin:0 0 10px;color:var(--muted)"><strong style="color:var(--ink)">.js</strong> → instala los bloques y el motor de reconocimiento en TurboWarp.</p><p style="font-size:13px;margin:0;color:var(--muted)"><strong style="color:var(--ink)">.json</strong> → contiene tus clases y ejemplos. Se descarga desde el entrenador.</p><div class="mini-links"><a class="chip" href="entrenador/index.html">Ir al entrenador ↗</a></div></div>
+      <div class="aside-card"><h2>Si algo no funciona</h2><details><summary>No aparece «Gestos entrenados»</summary><p>Revisa que cargaste el archivo <code>.js</code>, y no el PDF o el JSON, y que marcaste la ejecución sin sandbox.</p></details><details><summary>No se abre el selector JSON</summary><p>Pulsa directamente el bloque de carga desde la paleta de TurboWarp. El navegador puede bloquearlo si se invoca sin interacción del usuario.</p></details><details><summary>La cámara no se activa</summary><p>Permite la webcam en el navegador, comprueba que la página usa HTTPS y espera a que se descarguen las bibliotecas.</p></details></div>
+      <div class="aside-card warn"><h2>Permisos de seguridad</h2><p>La extensión necesita ejecutarse sin sandbox para utilizar la webcam. Este modo da permisos amplios: utiliza solo la extensión del proyecto que haya revisado el profesorado. <a href="https://docs.turbowarp.org/development/extensions/unsandboxed" target="_blank" rel="noopener noreferrer">Documentación oficial ↗</a></p></div>
+    </aside>
+  </div>
+</div></section>
+</main>
+<footer class="footer"><div class="container"><span>GestosIA · Fase 02: programación por bloques</span><a href="index.html">Volver al inicio</a></div></footer>
+</body></html>
