@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#07111f" name="theme-color"/>
+<title>Inteligencia Artificial I · Presentación del curso 2026–2027</title>
+<style>
+    :root{
+      --bg:#07111f;
+      --bg-2:#0b1729;
+      --panel:rgba(255,255,255,.075);
+      --panel-strong:rgba(255,255,255,.12);
+      --line:rgba(255,255,255,.14);
+      --text:#f6f8fc;
+      --muted:#aebcd1;
+      --accent:#63e6be;
+      --accent-2:#7aa8ff;
+      --warm:#ffcf70;
+      --danger:#ff8d92;
+      --shadow:0 24px 70px rgba(0,0,0,.32);
+      --radius:24px;
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+    body{background:
+      radial-gradient(circle at 15% 15%, rgba(99,230,190,.13), transparent 28%),
+      radial-gradient(circle at 85% 20%, rgba(122,168,255,.16), transparent 28%),
+      linear-gradient(145deg,var(--bg),var(--bg-2));}
+    button{font:inherit}
+    a{color:inherit}
+    .skip{position:fixed;left:-9999px;top:10px;z-index:50;background:#fff;color:#000;padding:.7rem 1rem;border-radius:10px}
+    .skip:focus{left:10px}
+    .deck{height:100%;width:100%;position:relative}
+    .slides{height:100%;width:100%;position:relative}
+    .slide{position:absolute;inset:0;display:grid;place-items:center;padding:72px 72px 96px;opacity:0;transform:translateX(5%);pointer-events:none;transition:opacity .28s ease, transform .38s cubic-bezier(.2,.75,.2,1)}
+    .slide.active{opacity:1;transform:translateX(0);pointer-events:auto;z-index:2}
+    .slide.prev{transform:translateX(-5%)}
+    .content{width:min(100%,var(--max));max-height:calc(100vh - 150px);overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;padding:4px}
+    .eyebrow{display:inline-flex;align-items:center;gap:.55rem;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-size:.78rem;margin-bottom:1rem}
+    .eyebrow::before{content:"";width:26px;height:2px;background:currentColor;border-radius:2px}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(3rem,7vw,6.7rem);line-height:.91;letter-spacing:-.055em;margin-bottom:1.25rem;max-width:1000px}
+    h2{font-size:clamp(2rem,4.6vw,4.4rem);line-height:.98;letter-spacing:-.04em;margin-bottom:1.15rem;max-width:1000px}
+    h3{font-size:clamp(1.08rem,1.7vw,1.45rem);margin-bottom:.65rem;letter-spacing:-.015em}
+    .lead{font-size:clamp(1.15rem,2vw,1.65rem);line-height:1.45;color:#dbe5f3;max-width:900px}
+    .muted{color:var(--muted)}
+    .accent{color:var(--accent)}
+    .accent2{color:var(--accent-2)}
+    .warm{color:var(--warm)}
+    .grid{display:grid;gap:18px}
+    .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.055));border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.12);backdrop-filter:blur(12px)}
+    .card p:last-child,.card ul:last-child{margin-bottom:0}
+    .card .num{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:.65rem}
+    .icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:rgba(99,230,190,.12);border:1px solid rgba(99,230,190,.22);margin-bottom:1rem;font-size:1.35rem}
+    .pillrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:1.2rem}
+    .pill{border:1px solid var(--line);background:rgba(255,255,255,.06);padding:.52rem .78rem;border-radius:999px;color:#dce6f4;font-size:.92rem}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:2rem}
+    .hero-meta .tag{padding:.72rem 1rem;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.05);font-weight:700}
+    .orbit{position:absolute;width:44vw;height:44vw;max-width:620px;max-height:620px;border:1px solid rgba(255,255,255,.08);border-radius:50%;right:-12vw;bottom:-22vw;pointer-events:none}
+    .orbit::before,.orbit::after{content:"";position:absolute;border:1px solid rgba(255,255,255,.07);border-radius:50%;inset:10%}.orbit::after{inset:23%}
+    .statement{font-size:clamp(2.2rem,5.2vw,5rem);line-height:1.02;letter-spacing:-.045em;max-width:1050px;margin:0}
+    .statement span{color:var(--accent)}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch;margin-top:2rem}
+    .flow .step{position:relative;padding:20px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.06);min-height:116px}
+    .flow .step:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:42%;z-index:2;color:var(--accent);font-weight:900;background:var(--bg-2);border-radius:20px;padding:0 3px}
+    .step b{display:block;margin-bottom:.45rem;color:#fff}
+    .mini{font-size:.9rem;color:var(--muted);line-height:1.4}
+    .timeline{display:grid;gap:14px;margin-top:1.2rem}
+    .term{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:start;padding:18px 20px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.055)}
+    .term .date{font-weight:900;color:var(--accent);font-size:1.05rem}
+    .units{display:flex;gap:8px;flex-wrap:wrap;margin-top:.7rem}
+    .unit{font-size:.88rem;padding:.45rem .65rem;border-radius:999px;background:rgba(122,168,255,.1);border:1px solid rgba(122,168,255,.25);color:#dfe9ff}
+    .quote{border-left:3px solid var(--accent);padding:1rem 1.2rem;background:rgba(99,230,190,.06);border-radius:0 18px 18px 0;font-size:clamp(1.05rem,1.6vw,1.3rem);line-height:1.5;color:#e6edf8}
+    ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+    ul.clean li{display:flex;gap:10px;align-items:flex-start;color:#dbe4f1;line-height:1.45}
+    ul.clean li::before{content:"✓";color:var(--accent);font-weight:900;flex:0 0 auto}
+    .question{font-size:clamp(1.5rem,3.4vw,3rem);line-height:1.12;letter-spacing:-.025em;margin:0 0 1rem}
+    .big-number{font-size:clamp(3rem,7vw,6rem);font-weight:900;line-height:.9;color:var(--accent);letter-spacing:-.06em}
+    .footer-note{margin-top:1rem;font-size:.86rem;color:#8fa2bb}
+    .topbar{position:fixed;z-index:10;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;pointer-events:none}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:.86rem;color:#dce5f2;pointer-events:auto}
+    .brand-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px rgba(99,230,190,.8)}
+    .top-actions{display:flex;gap:8px;pointer-events:auto}
+    .icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:rgba(6,14,26,.58);color:#f7f9fc;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(10px)}
+    .icon-btn:hover,.icon-btn:focus-visible{border-color:rgba(99,230,190,.5);outline:none;background:rgba(99,230,190,.09)}
+    .nav{position:fixed;z-index:10;left:0;right:0;bottom:0;padding:14px 18px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;background:linear-gradient(180deg,transparent,rgba(5,12,22,.8) 28%,rgba(5,12,22,.94));}
+    .nav-group{display:flex;align-items:center;gap:9px}
+    .nav-group.right{justify-content:flex-end}
+    .nav-btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;border-radius:14px;padding:.68rem .9rem;cursor:pointer;font-weight:800;min-width:44px}
+    .nav-btn:hover,.nav-btn:focus-visible{outline:none;border-color:rgba(99,230,190,.55);background:rgba(99,230,190,.09)}
+    .counter{font-variant-numeric:tabular-nums;color:#d4dfed;font-size:.87rem;font-weight:800;min-width:58px;text-align:center}
+    .progress-wrap{width:min(40vw,460px);height:5px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
+    .progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:inherit;transition:width .3s ease}
+    .dots{display:none}
+    .index{position:fixed;inset:0;z-index:30;background:rgba(4,10,18,.88);backdrop-filter:blur(18px);padding:70px 24px 90px;opacity:0;pointer-events:none;transition:opacity .2s ease;overflow:auto}
+    .index.open{opacity:1;pointer-events:auto}
+    .index-inner{width:min(100%,1000px);margin:auto}
+    .index h2{font-size:clamp(2rem,4vw,3.4rem)}
+    .index-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .index-item{text-align:left;padding:15px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.055);color:#fff;cursor:pointer}
+    .index-item:hover,.index-item:focus-visible{outline:none;border-color:rgba(99,230,190,.5);background:rgba(99,230,190,.08)}
+    .index-item small{display:block;color:var(--muted);margin-bottom:.35rem}
+    .index-item b{font-size:1rem}
+    .kbd{font-size:.8rem;border:1px solid var(--line);background:rgba(255,255,255,.06);padding:.2rem .4rem;border-radius:7px;color:#cbd8e8}
+    .center{text-align:center}.center .lead{margin-left:auto;margin-right:auto}
+    .hint{position:fixed;right:22px;bottom:76px;z-index:8;font-size:.75rem;color:#7f93ad}
+    @media (max-width:900px){
+      .slide{padding:66px 24px 92px}.g3,.g5{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr 1fr}.flow .step::after{display:none}.term{grid-template-columns:1fr;gap:8px}.progress-wrap{width:32vw}.hint{display:none}
+    }
+    @media (max-width:620px){
+      .slide{padding:62px 16px 88px}.g2,.g3,.g5,.index-grid{grid-template-columns:1fr}.card{padding:18px}.flow{grid-template-columns:1fr}.progress-wrap{width:28vw}.nav-btn .label{display:none}.brand span:last-child{display:none}.content{max-height:calc(100vh - 138px)}
+    }
+    @media (prefers-reduced-motion:reduce){.slide,.progress,.index{transition:none}}
+    @media print{
+      html,body{overflow:visible;background:#fff;color:#111}.topbar,.nav,.hint,.index{display:none!important}.slides{height:auto}.slide{position:relative;opacity:1!important;transform:none!important;pointer-events:auto;page-break-after:always;min-height:100vh;background:#07111f;color:#fff}.content{max-height:none;overflow:visible}
+    }
+  </style>
+</head>
+<body>
+<a class="skip" href="#slide-1">Ir al contenido</a>
+<div class="deck" id="deck">
+<header class="topbar">
+<div class="brand"><span class="brand-dot"></span><span>IA I · 1.º Bachillerato</span></div>
+<div class="top-actions">
+<button aria-label="Abrir índice" class="icon-btn" id="indexBtn" title="Índice (I)">☰</button>
+<button aria-label="Pantalla completa" class="icon-btn" id="fullBtn" title="Pantalla completa (F)">⛶</button>
+</div>
+</header>
+<main aria-live="polite" class="slides">
+<section aria-label="Diapositiva 1 de 19" class="slide active" data-title="Bienvenida" id="slide-1">
+<div class="content">
+<div class="eyebrow">Curso 2026 · 2027</div>
+<h1>Inteligencia<br/><span class="accent">Artificial I</span></h1>
+<p class="lead">Un curso para <strong>entender</strong> cómo funciona la IA, <strong>experimentar</strong> con ella y aprender a <strong>crear soluciones</strong> con criterio.</p>
+<div class="hero-meta">
+<div class="tag">1.º de Bachillerato</div><div class="tag">4 h/semana · referencia</div><div class="tag">Melilla</div>
+</div>
+</div><div aria-hidden="true" class="orbit"></div>
+</section>
+<section aria-label="Diapositiva 2 de 19" class="slide" data-title="La idea del curso" id="slide-2">
+<div class="content center">
+<div class="eyebrow">La idea clave</div>
+<p class="statement">No vamos a estudiar IA para <span>memorizar conceptos</span>.<br/>Vamos a aprenderlos para <span>hacer cosas con ellos</span>.</p>
+<div class="pillrow" style="justify-content:center">
+<span class="pill">preguntar</span><span class="pill">investigar</span><span class="pill">experimentar</span><span class="pill">programar</span><span class="pill">analizar</span><span class="pill">crear</span><span class="pill">argumentar</span>
+</div>
+</div>
+</section>
+<section aria-label="Diapositiva 3 de 19" class="slide" data-title="Qué aprenderemos" id="slide-3">
+<div class="content">
+<div class="eyebrow">Nuestro mapa</div>
+<h2>¿Qué vamos a aprender?</h2>
+<p class="lead">La materia se organiza oficialmente en <strong>cinco bloques</strong> que se conectan para comprender, analizar y crear sistemas inteligentes.</p>
+<div class="grid g5">
+<article class="card"><div class="icon">◉</div><div class="num">Bloque A</div><h3>Fundamentos de IA</h3><p class="mini">Qué es, cómo funciona, por qué ha crecido y cómo aprende.</p></article>
+<article class="card"><div class="icon">◇</div><div class="num">Bloque B</div><h3>Tratamiento de información</h3><p class="mini">Cómo representamos texto, sonido, imagen y otros datos.</p></article>
+<article class="card"><div class="icon">⌘</div><div class="num">Bloque C</div><h3>Programación</h3><p class="mini">Leer, modificar y construir programas relacionados con IA.</p></article>
+<article class="card"><div class="icon">∿</div><div class="num">Bloque D</div><h3>Métodos numéricos</h3><p class="mini">Clasificar, predecir, medir errores y mejorar modelos.</p></article>
+<article class="card"><div class="icon">⚖</div><div class="num">Bloque E</div><h3>Ética e IA</h3><p class="mini">Impacto, datos, derechos, bienestar y uso responsable.</p></article>
+</div>
+</div>
+</section>
+<section aria-label="Diapositiva 4 de 19" class="slide" data-title="Bloque A · Fundamentos" id="slide-4">
+<div class="content">
+<div class="eyebrow">Bloque A</div><h2>Fundamentos de Inteligencia Artificial</h2>
+<div class="grid g2">
+<div class="card"><h3>Preguntas que resolveremos</h3><ul class="clean"><li>¿Qué hace que un sistema sea “inteligente”?</li><li>¿En qué se diferencia una IA específica de una de propósito general?</li><li>¿Por qué los datos son imprescindibles?</li><li>¿Qué partes tiene un sistema inteligente?</li></ul></div>
+<div class="card"><h3>Cómo aprende una máquina</h3><p class="muted">Trabajaremos las tres estrategias básicas de aprendizaje automático:</p><div class="pillrow"><span class="pill">supervisado</span><span class="pill">no supervisado</span><span class="pill">por refuerzo</span></div><p class="footer-note">Con ejemplos, interacción con sistemas y pequeñas experiencias de clasificación.</p></div>
+</div>
+</div>
+</section>
+<section aria-label="Diapositiva 5 de 19" class="slide" data-title="Bloque B · Información" id="slide-5">
+<div class="content">
+<div class="eyebrow">Bloque B</div><h2>La IA no ve el mundo como nosotros</h2>
+<p class="lead">Antes de aprender, un sistema necesita que la realidad pueda convertirse en <strong>datos representables y procesables</strong>.</p>
+<div class="grid g3">
+<div class="card"><div class="icon">Aa</div><h3>Texto y sonido</h3><p class="mini">Captación, representación y tratamiento de información textual y sonora.</p></div>
+<div class="card"><div class="icon">▧</div><h3>Imagen y visión</h3><p class="mini">Cómo una imagen puede convertirse en información que un algoritmo pueda utilizar.</p></div>
+<div class="card"><div class="icon">↗</div><h3>Entradas y salidas</h3><p class="mini">Qué información entra en un agente inteligente y qué formato debe tener su respuesta.</p></div>
+</div>
+<div class="quote" style="margin-top:18px">Una pregunta recurrente del curso será: <strong>¿qué datos necesita el sistema y qué queremos que produzca?</strong></div>
+</div>
+</section>
+<section aria-label="Diapositiva 6 de 19" class="slide" data-title="Bloque C · Programación" id="slide-6">
+<div class="content">
+<div class="eyebrow">Bloque C</div><h2>Programar será una herramienta,<br/>no un fin aislado</h2>
+<div class="grid g2">
+<div class="card"><h3>Lo que iremos incorporando</h3><ul class="clean"><li>Entornos de desarrollo orientados a proyectos de IA.</li><li>Variables y organización básica de un programa.</li><li>Condicionales, bucles, ruptura, salida y excepciones.</li><li>Librerías para tratar, representar y modelar datos.</li></ul></div>
+<div class="card"><h3>¿Para qué?</h3><p class="question">Para <span class="accent">entender</span>, <span class="accent2">modificar</span> y finalmente <span class="warm">crear</span> programas sencillos relacionados con IA.</p><p class="muted">La programación aparecerá cuando la necesitemos para resolver problemas, experimentar con modelos o trabajar con datos.</p></div>
+</div>
+</div>
+</section>
+<section aria-label="Diapositiva 7 de 19" class="slide" data-title="Bloque D · Modelos" id="slide-7">
+<div class="content">
+<div class="eyebrow">Bloque D</div><h2>¿Cómo sabemos si un modelo funciona?</h2>
+<div class="grid g3">
+<article class="card"><div class="num">01 · Resolver</div><h3>Clasificación y regresión</h3><p class="mini">Decidir categorías o estimar valores según el problema.</p></article>
+<article class="card"><div class="num">02 · Evaluar</div><h3>Matriz de confusión · ROC · AUC</h3><p class="mini">Aprender a medir aciertos, errores y rendimiento.</p></article>
+<article class="card"><div class="num">03 · Mejorar</div><h3>Sesgo · varianza · ajuste</h3><p class="mini">Detectar ajuste deficiente, sobreajuste y efecto de hiperparámetros.</p></article>
+</div>
+<div class="pillrow"><span class="pill">árboles de decisión</span><span class="pill">búsqueda de patrones</span><span class="pill">regresión lineal</span><span class="pill">experimentación</span></div>
+</div>
+</section>
+<section aria-label="Diapositiva 8 de 19" class="slide" data-title="Bloque E · Ética" id="slide-8">
+<div class="content">
+<div class="eyebrow">Bloque E · transversal</div><h2>Que algo pueda hacerse<br/>no significa que deba hacerse</h2>
+<div class="grid g2">
+<div class="card"><h3>Datos y decisiones</h3><p class="muted">Analizaremos la ética en la captación y uso de datos, y qué consecuencias puede tener una decisión automatizada sobre personas reales.</p></div>
+<div class="card"><h3>Impacto social</h3><p class="muted">Noticias, empleo, bienestar, derechos, libertades y normas que intentan regular el desarrollo y el uso de sistemas inteligentes.</p></div>
+</div>
+<div class="quote" style="margin-top:18px"><strong>No será “el tema del final”.</strong> La mirada crítica aparecerá durante todo el curso, cada vez que trabajemos con datos, modelos o aplicaciones.</div>
+</div>
+</section>
+<section aria-label="Diapositiva 9 de 19" class="slide" data-title="Cómo avanza el curso" id="slide-9">
+<div class="content">
+<div class="eyebrow">Progresión</div><h2>De entender a construir</h2>
+<div aria-label="Secuencia de aprendizaje" class="flow">
+<div class="step"><b>1 · Entender</b><span class="mini">Qué es la IA y qué partes tiene.</span></div>
+<div class="step"><b>2 · Representar</b><span class="mini">Convertir información en datos útiles.</span></div>
+<div class="step"><b>3 · Experimentar</b><span class="mini">Probar modelos y observar resultados.</span></div>
+<div class="step"><b>4 · Programar</b><span class="mini">Modificar y crear soluciones.</span></div>
+<div class="step"><b>5 · Evaluar</b><span class="mini">Medir, mejorar y decidir responsablemente.</span></div>
+</div>
+</div>
+</section>
+<section aria-label="Diapositiva 10 de 19" class="slide" data-title="1.ª evaluación" id="slide-10">
+<div class="content">
+<div class="eyebrow">1.ª evaluación · sept–dic</div><h2>¿Qué es realmente la IA<br/>y cómo aprende?</h2>
+<div class="grid g2">
+<div class="card"><div class="num">Unidades orientativas</div><h3>U1 · IA: más allá del nombre</h3><p class="mini">Significado, ejemplos, impacto, propósito general/específico y sistemas inteligentes.</p><div class="units"><span class="unit">Fundamentos</span><span class="unit">Impacto</span></div></div>
+<div class="card"><div class="num">Unidades orientativas</div><h3>U2 · Los datos enseñan</h3><p class="mini">Datos, módulos de información y por qué un modelo depende de lo que recibe.</p><div class="units"><span class="unit">Datos</span><span class="unit">Entradas/salidas</span></div></div>
+<div class="card"><div class="num">Unidades orientativas</div><h3>U3 · ¿Cómo aprende una máquina?</h3><p class="mini">Aprendizaje supervisado, no supervisado y por refuerzo; contexto y aplicaciones.</p><div class="units"><span class="unit">ML</span><span class="unit">Clasificación inicial</span></div></div>
+<div class="card"><h3>Primeros retos</h3><p class="mini">Actividades de clasificación, análisis de sistemas cotidianos y pequeños experimentos para descubrir qué ocurre cuando cambian los datos.</p></div>
+</div>
+</div>
+</section>
+<section aria-label="Diapositiva 11 de 19" class="slide" data-title="2.ª evaluación" id="slide-11">
+<div class="content">
+<div class="eyebrow">2.ª evaluación · ene–mar</div><h2>¿Cómo construimos sistemas<br/>que trabajan con datos?</h2>
+<div class="grid g3">
+<div class="card"><div class="num">U4</div><h3>Del mundo al dato</h3><p class="mini">Texto, sonido, imagen, representación, entradas y salidas.</p></div>
+<div class="card"><div class="num">U5</div><h3>Programar para experimentar</h3><p class="mini">Variables, flujo de ejecución, librerías y lectura/modificación de código.</p></div>
+<div class="card"><div class="num">U6</div><h3>Clasificar o predecir</h3><p class="mini">Formatos, objetivos y modelos para problemas de clasificación y regresión.</p></div>
+</div>
+<p class="footer-note">El calendario de Melilla recomienda este tramo para prácticas técnicas, programación y aprendizaje automático.</p>
+</div>
+</section>
+<section aria-label="Diapositiva 12 de 19" class="slide" data-title="3.ª evaluación" id="slide-12">
+<div class="content">
+<div class="eyebrow">3.ª evaluación · abr–jun</div><h2>¿Cómo mejoramos una IA<br/>y cuándo podemos confiar en ella?</h2>
+<div class="grid g3">
+<div class="card"><div class="num">U7</div><h3>Medir para decidir</h3><p class="mini">Matriz de confusión, curva ROC y AUC.</p></div>
+<div class="card"><div class="num">U8</div><h3>Modelos que se equivocan</h3><p class="mini">Árboles, patrones, regresión lineal, sesgo-varianza, ajuste e hiperparámetros.</p></div>
+<div class="card"><div class="num">U9</div><h3>IA con propósito</h3><p class="mini">Aplicación integrada en retos/proyectos y análisis ético del resultado.</p></div>
+</div>
+<div class="quote" style="margin-top:18px">Objetivo del tramo final: <strong>integrar lo aprendido para analizar o crear una solución y justificar sus decisiones.</strong></div>
+</div>
+</section>
+<section aria-label="Diapositiva 13 de 19" class="slide" data-title="Calendario" id="slide-13">
+<div class="content">
+<div class="eyebrow">Temporalización realista</div><h2>El calendario también manda</h2>
+<div class="timeline">
+<div class="term"><div><div class="date">09 SEP → 22 DIC</div><div class="mini">Tramo 1</div></div><div><strong>Fundamentos + primeras situaciones de aprendizaje</strong><div class="units"><span class="unit">Evaluación inicial</span><span class="unit">U1–U3 aprox.</span><span class="unit">Cierre antes de Navidad</span></div></div></div>
+<div class="term"><div><div class="date">11 ENE → 19 MAR</div><div class="mini">Tramo 2</div></div><div><strong>Programación + datos + aprendizaje automático</strong><div class="units"><span class="unit">U4–U6 aprox.</span><span class="unit">Prácticas técnicas</span><span class="unit">Continuidad</span></div></div></div>
+<div class="term"><div><div class="date">05 ABR → 23 JUN</div><div class="mini">Tramo 3</div></div><div><strong>Evaluación de modelos + integración + proyecto</strong><div class="units"><span class="unit">U7–U9 aprox.</span><span class="unit">Proyecto final</span><span class="unit">Refuerzo y cierre</span></div></div></div>
+</div>
+<p class="footer-note">Curso oficial: 175 días lectivos en Bachillerato. La carga semanal de referencia de la materia es de 4 horas; las sesiones exactas dependen del horario concreto y de las incidencias reales.</p>
+</div>
+</section>
+<section aria-label="Diapositiva 14 de 19" class="slide" data-title="Cómo trabajaremos" id="slide-14">
+<div class="content">
+<div class="eyebrow">Metodología</div><h2>¿Qué se espera de vosotros?</h2>
+<div class="grid g3">
+<div class="card"><div class="icon">?</div><h3>Preguntar y justificar</h3><p class="mini">No aceptar una respuesta solo porque la dé una máquina. Buscar evidencias y explicar decisiones.</p></div>
+<div class="card"><div class="icon">⚙</div><h3>Experimentar</h3><p class="mini">Cambiar datos, parámetros o código y observar qué ocurre.</p></div>
+<div class="card"><div class="icon">↔</div><h3>Colaborar</h3><p class="mini">Compartir ideas, contrastar resultados y construir soluciones en equipo cuando el reto lo requiera.</p></div>
+<div class="card"><div class="icon">⌨</div><h3>Construir</h3><p class="mini">Pasar de usar herramientas a entenderlas, modificarlas y crear.</p></div>
+<div class="card"><div class="icon">◌</div><h3>Reflexionar</h3><p class="mini">Analizar impacto, límites, errores, riesgos y decisiones éticas.</p></div>
+<div class="card"><div class="icon">↗</div><h3>Mejorar</h3><p class="mini">Revisar el trabajo tras obtener resultados: un primer modelo rara vez es el definitivo.</p></div>
+</div>
+</div>
+</section>
+
+
+<section aria-label="Diapositiva 15 de 19" class="slide" data-title="Normas · Aula de informática" id="slide-15">
+<div class="content">
+<div class="eyebrow">Aula de informática</div>
+<h2>Tres reglas maestras</h2>
+<p class="lead">Trabajamos con equipos compartidos, cuentas, datos y acceso a Internet. Para que el aula funcione, hay tres principios que están por encima de todo.</p>
+<div class="grid g3">
+<article class="card"><div class="icon">♙</div><div class="num">01</div><h3>Respeta a las personas</h3><p class="mini">Trabaja sin interferir en el aprendizaje de los demás. Colabora, escucha y utiliza la tecnología de forma responsable.</p></article>
+<article class="card"><div class="icon">⌨</div><div class="num">02</div><h3>Cuida los equipos</h3><p class="mini">El ordenador y sus periféricos son material de uso común. Se utilizan con cuidado y únicamente para el trabajo de clase.</p></article>
+<article class="card"><div class="icon">◎</div><div class="num">03</div><h3>Protege datos y cuentas</h3><p class="mini">No accedas a cuentas, archivos o información de otras personas. Tus credenciales son personales.</p></article>
+</div>
+<div class="quote" style="margin-top:18px"><strong>Regla sencilla:</strong> si una acción perjudica el equipo, la privacidad, la convivencia o el aprendizaje, no tiene cabida en el aula.</div>
+</div>
+</section><section aria-label="Diapositiva 16 de 19" class="slide" data-title="Normas · Equipo y puesto" id="slide-16">
+<div class="content">
+<div class="eyebrow">Funcionamiento · 01</div>
+<h2>Tu puesto y el equipo</h2>
+<div class="grid g2">
+<div class="card"><h3>Al comenzar</h3><ul class="clean"><li>Ocupa el puesto indicado y revisa visualmente el equipo.</li><li>Si detectas cualquier daño, desconexión o problema, avisa <strong>antes de utilizarlo</strong>.</li><li>Entra únicamente con tu cuenta y mantén tus contraseñas en privado.</li><li>Abre solo las aplicaciones y recursos necesarios para la actividad.</li></ul></div>
+<div class="card"><h3>Durante y al finalizar</h3><ul class="clean"><li>No instales programas, extensiones ni cambies configuraciones sin autorización.</li><li>No comas ni tengas bebidas junto a los equipos.</li><li>Guarda el trabajo en la ubicación indicada y no manipules archivos ajenos.</li><li>Cierra sesión, recoge el puesto y apaga o deja el equipo como se indique.</li></ul></div>
+</div>
+<p class="footer-note">Si algo deja de funcionar: detente, avisa y explica qué ha ocurrido. No intentes ocultarlo ni “arreglarlo” modificando el sistema.</p>
+</div>
+</section><section aria-label="Diapositiva 17 de 19" class="slide" data-title="Normas · Internet e IA" id="slide-17">
+<div class="content">
+<div class="eyebrow">Funcionamiento · 02</div>
+<h2>Internet e IA: herramientas de trabajo</h2>
+<div class="grid g2">
+<div class="card"><div class="icon">↗</div><h3>Uso de Internet</h3><ul class="clean"><li>Navega por recursos relacionados con la tarea que estemos realizando.</li><li>Redes sociales, juegos, streaming y contenidos ajenos a la actividad quedan fuera del tiempo de trabajo.</li><li>No descargues archivos ni ejecutes software sin saber qué es y sin autorización cuando sea necesaria.</li><li>No publiques datos personales, imágenes o trabajos de compañeros.</li></ul></div>
+<div class="card"><div class="icon">◉</div><h3>Uso de Inteligencia Artificial</h3><ul class="clean"><li>La IA puede utilizarse cuando forme parte de la actividad o se autorice su uso.</li><li>Debes poder explicar qué has hecho tú y qué ayuda has recibido de una IA.</li><li>Una respuesta generada <strong>no se da por correcta automáticamente</strong>: se contrasta y se verifica.</li><li>No introduzcas información personal, sensible o privada en servicios de IA.</li></ul></div>
+</div>
+<div class="quote" style="margin-top:18px">Usar IA no sustituye a <strong>pensar, comprender, justificar ni aprender</strong>.</div>
+</div>
+</section><section aria-label="Diapositiva 18 de 19" class="slide" data-title="Normas · Trabajo y convivencia" id="slide-18">
+<div class="content">
+<div class="eyebrow">Funcionamiento · 03</div>
+<h2>Un aula en la que se pueda trabajar</h2>
+<div class="grid g3">
+<article class="card"><div class="icon">↔</div><h3>Trabajamos juntos</h3><p class="mini">Habla con un volumen que permita concentrarse. Ayudar no significa hacer el trabajo de otra persona ni copiarle la solución.</p></article>
+<article class="card"><div class="icon">◌</div><h3>Dispositivos personales</h3><p class="mini">Móviles y otros dispositivos permanecen guardados salvo que se indique expresamente que forman parte de la actividad.</p></article>
+<article class="card"><div class="icon">♪</div><h3>Auriculares</h3><p class="mini">Se utilizan únicamente cuando la actividad lo requiera o exista autorización; nunca deben aislarte de las indicaciones de clase.</p></article>
+<article class="card"><div class="icon">?</div><h3>Cuando tienes un problema</h3><p class="mini">Primero revisa la consigna y prueba una solución razonable; después pregunta o pide ayuda aportando qué has intentado.</p></article>
+<article class="card"><div class="icon">✓</div><h3>Responsabilidad</h3><p class="mini">Cada persona responde del uso que hace de su sesión, sus archivos y los recursos digitales que utiliza.</p></article>
+<article class="card"><div class="icon">!</div><h3>Si una norma se incumple</h3><p class="mini">El uso inadecuado se detiene de inmediato y se actuará conforme a las normas de aula y del centro, especialmente si afecta a equipos, datos o convivencia.</p></article>
+</div>
+</div>
+</section><section aria-label="Diapositiva 19 de 19" class="slide" data-title="Punto de partida" id="slide-19">
+<div class="content center">
+<div class="eyebrow">Empezamos</div><h2>Al terminar el curso…</h2>
+<p class="statement" style="font-size:clamp(2rem,4.3vw,4.15rem)">¿Qué te gustaría ser capaz de <span>entender</span>, <span>crear</span> o <span>cuestionar</span> sobre Inteligencia Artificial?</p>
+<p class="lead" style="margin-top:1.5rem">Esa respuesta será nuestro punto de partida.</p>
+
+</div>
+</section></main>
+<aside aria-hidden="true" aria-label="Índice de diapositivas" class="index" id="index">
+<div class="index-inner"><div class="eyebrow">Índice</div><h2>Ir a una diapositiva</h2><div class="index-grid" id="indexGrid"></div></div>
+</aside>
+<div aria-hidden="true" class="hint">← → navegar · <span class="kbd">I</span> índice · <span class="kbd">F</span> pantalla completa</div>
+<footer aria-label="Controles de presentación" class="nav">
+<div class="nav-group"><button aria-label="Diapositiva anterior" class="nav-btn" id="prevBtn">← <span class="label">Anterior</span></button></div>
+<div class="nav-group"><span class="counter" id="counter">01 / 19</span><div aria-hidden="true" class="progress-wrap"><div class="progress" id="progress"></div></div></div>
+<div class="nav-group right"><button aria-label="Diapositiva siguiente" class="nav-btn" id="nextBtn"><span class="label">Siguiente</span> →</button></div>
+</footer>
+</div>
+<script>
+    (() => {
+      const slides=[...document.querySelectorAll('.slide')];
+      const total=slides.length;
+      let current=Math.max(0,Math.min(total-1,(parseInt(location.hash.replace('#s',''),10)||1)-1));
+      const prevBtn=document.getElementById('prevBtn'), nextBtn=document.getElementById('nextBtn');
+      const counter=document.getElementById('counter'), progress=document.getElementById('progress');
+      const index=document.getElementById('index'), indexBtn=document.getElementById('indexBtn'), indexGrid=document.getElementById('indexGrid');
+      const fullBtn=document.getElementById('fullBtn');
+      const pad=n=>String(n).padStart(2,'0');
+
+      slides.forEach((s,i)=>{
+        const b=document.createElement('button');
+        b.className='index-item'; b.innerHTML=`<small>${pad(i+1)}</small><b>${s.dataset.title||'Diapositiva'}</b>`;
+        b.addEventListener('click',()=>{go(i);toggleIndex(false)}); indexGrid.appendChild(b);
+      });
+
+      function render(){
+        slides.forEach((s,i)=>{s.classList.toggle('active',i===current);s.classList.toggle('prev',i<current);s.setAttribute('aria-hidden',i===current?'false':'true')});
+        counter.textContent=`${pad(current+1)} / ${pad(total)}`;
+        progress.style.width=`${((current+1)/total)*100}%`;
+        prevBtn.disabled=current===0; nextBtn.disabled=current===total-1;
+        location.hash=`s${current+1}`;
+        document.title=`${slides[current].dataset.title} · IA I 2026–2027`;
+      }
+      function go(n){current=Math.max(0,Math.min(total-1,n));render()}
+      function next(){go(current+1)} function prev(){go(current-1)}
+      function toggleIndex(force){const open=typeof force==='boolean'?force:!index.classList.contains('open');index.classList.toggle('open',open);index.setAttribute('aria-hidden',String(!open)); if(open) index.querySelector('button')?.focus(); else indexBtn.focus()}
+      prevBtn.addEventListener('click',prev);nextBtn.addEventListener('click',next);indexBtn.addEventListener('click',()=>toggleIndex());
+      fullBtn.addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}});
+      document.addEventListener('keydown',e=>{
+        if(index.classList.contains('open')&&e.key==='Escape'){toggleIndex(false);return}
+        if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}
+        if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
+        if(e.key==='Home')go(0); if(e.key==='End')go(total-1);
+        if(e.key.toLowerCase()==='i')toggleIndex();
+        if(e.key.toLowerCase()==='f')fullBtn.click();
+      });
+      let x0=null,y0=null;
+      document.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+      document.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.3){dx<0?next():prev()}x0=y0=null},{passive:true});
+      window.addEventListener('hashchange',()=>{const n=parseInt(location.hash.replace('#s',''),10);if(n&&n!==current+1){current=Math.max(0,Math.min(total-1,n-1));render()}});
+      render();
+    })();
+  </script>
+</body>
+</html>
